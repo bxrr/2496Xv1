@@ -2,7 +2,6 @@
 #define __CHAS__
 
 #include "main.h"
-#include "pid.h"
 #include <vector>
 #include <array>
 
@@ -86,6 +85,21 @@ public:
             sum += motor.get_temperature();
 
         return sum / (left_motors.size() + right_motors.size());
+    }
+
+    void spin_dist(double distance, double speed=127, int timeout=5000)
+    {
+        int time = 0;
+        double start_pos = pos();
+        double target = start_pos + distance;
+
+        while((distance < 0 ? pos() > target : pos() < target) && time < timeout)
+        {
+            spin(distance / abs(distance) * speed);
+            pros::delay(1);
+            time += 1;
+        }
+        stop();
     }
 };
 

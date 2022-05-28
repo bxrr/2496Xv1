@@ -3,7 +3,7 @@
 
 #include "main.h"
 #include "global.h"
-#include "obj/auton_obj.h"
+#include "lib/auton_obj.h"
 #include <vector>
 #include <string>
 

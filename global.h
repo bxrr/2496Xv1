@@ -2,8 +2,8 @@
 #define __GLOBAL__
 
 #include "main.h"
-#include "piston.h"
-#include "chassis.h"
+#include "lib/piston.h"
+#include "lib/chassis.h"
 
 
 namespace glb
