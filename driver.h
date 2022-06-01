@@ -44,7 +44,7 @@ void tank_drive()
 
 void print_info(int time)
 {
-    if(time % 500 == 0 && time % 200 != 0 && time % 200 != 0) con.print(0, 0, "TEMP: %.1lf         ", chas.temp());
+    if(time % 500 == 0 && time % 200 != 0) con.print(0, 0, "TEMP: %.1lf         ", chas.temp());
     if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
 }
 
