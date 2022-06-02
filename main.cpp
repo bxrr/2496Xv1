@@ -7,8 +7,6 @@ using namespace glb;
 using namespace pros;
 
 
-Auton auton = autons.at(0);
-
 void initialize() 
 {
 	lcd::initialize();
