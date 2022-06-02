@@ -2,6 +2,7 @@
 #include "global.h"
 #include "driver.h"
 #include "auton.h"
+#include "lib/auton_obj.h"
 
 using namespace glb;
 using namespace pros;
@@ -10,12 +11,13 @@ using namespace pros;
 void initialize() 
 {
 	lcd::initialize();
-	auton = auton_selector(autons);
+	static Auton temp = auton_selector(autons);
+	auton = &temp;
 }
 
 void autonomous()
 {
-	auton.run();
+	(*auton).run();
 }
 
 void opcontrol() 

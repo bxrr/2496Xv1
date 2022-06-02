@@ -6,7 +6,6 @@
 #include "lib/chassis.h"
 #include "lib/auton_obj.h"
 
-
 namespace glb
 {
     // ports ===============================
@@ -20,7 +19,7 @@ namespace glb
     pros::Imu imu(P_IMU);
     
     Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_06, false);
-    Auton auton;
+    Auton *auton;
 }
 
 #endif
