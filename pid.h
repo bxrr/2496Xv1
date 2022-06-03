@@ -6,7 +6,7 @@
 
 namespace pid
 {
-    void drive(double target_dist, int timeout=5000, double max_speed=127)
+    void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
         #define DRIVE_KP 1
         #define DRIVE_KI 0
@@ -22,6 +22,9 @@ namespace pid
         double derivative = 0;
         double init_heading = glb::imu.get_heading();
         double heading_error = 0;
+        double error_range_time = 0;
+
+        bool exit = false;
 
         int time = 0;
 
@@ -41,6 +44,16 @@ namespace pid
                 double multiplier = 127/(abs(speed) + abs(correction));
                 speed *= multiplier;
                 correction *= multiplier;
+            }
+
+            if (abs(error) < 1.5)
+            {
+                if(!exit)
+                    exit = true;
+                else
+                    error_range_time++;
+                if (exit_time <= error_range_time)
+                    break;
             }
 
             mtr::spin_left(speed - correction);
