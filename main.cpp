@@ -11,6 +11,7 @@ using namespace pros;
 void initialize() 
 {
 	lcd::initialize();
+	con.clear();
 	static Auton temp = auton_selector(autons);
 	auton = &temp;
 }

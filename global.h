@@ -9,11 +9,11 @@
 namespace glb
 {
     // ports ===============================
-    #define P_IMU 1
-    #define P_BL 2
-    #define P_FL 3
-    #define P_BR 4
-    #define P_FR 5
+    #define P_IMU 10
+    #define P_BL 11
+    #define P_FL 1
+    #define P_BR 12
+    #define P_FR 2
     // objects =============================
     pros::Controller con(pros::E_CONTROLLER_MASTER);
     pros::Imu imu(P_IMU);

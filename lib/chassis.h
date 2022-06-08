@@ -15,9 +15,9 @@ public:
     Chassis(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, pros::motor_gearset_e gearset=pros::E_MOTOR_GEARSET_06, bool reverse_spin=false)
     {
         for(int port : left_motor_ports)
-            left_motors.push_back(pros::Motor(port, gearset, reverse_spin + port < 0));
+            left_motors.push_back(pros::Motor(port, gearset, reverse_spin + abs(port) > 0));
         for(int port : right_motor_ports)
-            right_motors.push_back(pros::Motor(port, gearset, reverse_spin + port > 0));
+            right_motors.push_back(pros::Motor(port, gearset, !(reverse_spin + abs(port) > 0)));
     }
 
     void spin_left(double speed)
