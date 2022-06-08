@@ -4,15 +4,21 @@
 #include "main.h"
 #include "global.h"
 #include "lib/auton_obj.h"
+#include "pid.h"
 #include <vector>
 #include <string>
 
 using namespace glb;
 using namespace pros;
+using namespace pid;
 
 void test()
 {
-    
+    drive(600);
+    drive(-600);
+    turn(90);
+    turn(180);
+    turn(-180);
 }
 
 void right()
