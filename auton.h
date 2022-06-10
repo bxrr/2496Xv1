@@ -14,8 +14,8 @@ using namespace pid;
 
 void test()
 {
-    drive(600);
-    drive(-600);
+    drive(2000);
+    drive(-2000);
     turn(90);
     turn(180);
     turn(-180);

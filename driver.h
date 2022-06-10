@@ -26,6 +26,20 @@ void arcade_drive()
     }
 }
 
+void flywheel_spin()
+{
+    if(con.get_digital(E_CONTROLLER_DIGITAL_R2))
+    {
+        flywheelBottom.move(127);
+        flywheelTop.move(127);
+    }
+    else
+    {
+        flywheelBottom.move(0);
+        flywheelTop.move(0);
+    }
+}
+
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
@@ -44,7 +58,8 @@ void tank_drive()
 
 void print_info(int time)
 {
-    if(time % 500 == 0 && time % 5000 != 0) con.print(0, 0, "TEMP: %.1lf         ", chas.temp());
+    //if(time % 500 == 0 && time % 5000 != 0) con.print(0, 0, "TEMP: %.1lf         ", chas.temp());
+    if(time % 500 == 0 && time % 5000 != 0) con.print(0, 0, "FLY_RPM: %.1lf         ", (flywheelBottom.get_actual_velocity() + flywheelTop.get_actual_velocity())/2);
     if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 5000 == 0) con.print(2, 0, "%s                 ", (*auton).get_name());
 }

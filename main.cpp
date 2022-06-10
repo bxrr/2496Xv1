@@ -28,12 +28,14 @@ void opcontrol()
 	while(true)
 	{
 		arcade_drive();
+		flywheel_spin();
 		print_info(time);
 
 		if(con.get_digital(E_CONTROLLER_DIGITAL_DOWN))
 			autonomous();
 		if(con.get_digital(E_CONTROLLER_DIGITAL_RIGHT))
 			calibrate_robot();
+		
 
 		delay(1);
 		time++;

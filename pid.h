@@ -8,7 +8,7 @@ namespace pid
 {
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
-        #define DRIVE_KP 1
+        #define DRIVE_KP 0.25
         #define DRIVE_KI 0
         #define DRIVE_KD 0
         #define IMU_K 0
@@ -68,7 +68,7 @@ namespace pid
 
     void turn(double target_deg, int timeout=5000, double max_speed=127, int exit_time=100)
     {  
-        #define TURN_KP 1
+        #define TURN_KP 3
         #define TURN_KI 0
         #define TURN_KD 0
         if (target_deg > 150)
