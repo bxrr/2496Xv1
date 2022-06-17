@@ -28,18 +28,56 @@ void arcade_drive()
 
 void flywheel_spin()
 {
-    if(con.get_digital(E_CONTROLLER_DIGITAL_R2))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
     {
-        flywheelBottom.move(127);
-        flywheelTop.move(127);
+        flywheelL.move(127);
+        flywheelR.move(127);
     }
     else
     {
-        flywheelBottom.move(0);
-        flywheelTop.move(0);
+        flywheelL.move(0);
+        flywheelR.move(0);
     }
 }
 
+void flywheel_toggle()
+{
+    static bool fly_toggle = false;
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+        fly_toggle = fly_toggle ? false : true;
+    if(fly_toggle)
+    {
+        flywheelL.move(127);
+        flywheelR.move(127);
+    }
+    else
+    {
+        flywheelL.move(0);
+        flywheelR.move(0);
+    }
+}
+
+void intake()
+{
+    static bool intake_toggle = false;
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
+        intake_toggle = intake_toggle ? false : true;
+    if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
+    {
+        intakeL.move(-127);
+        intakeR.move(-127);
+    }
+    else if(intake_toggle)
+    {
+        intakeL.move(127);
+        intakeR.move(127);
+    }
+    else
+    {
+        intakeL.move(0);
+        intakeR.move(0);
+    }
+}
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
@@ -58,16 +96,54 @@ void tank_drive()
 
 void print_info(int time)
 {
-    //if(time % 500 == 0 && time % 5000 != 0) con.print(0, 0, "TEMP: %.1lf         ", chas.temp());
-    if(time % 500 == 0 && time % 5000 != 0) con.print(0, 0, "FLY_RPM: %.1lf         ", (flywheelBottom.get_actual_velocity() + flywheelTop.get_actual_velocity())/2);
-    if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
-    if(time % 5000 == 0) con.print(2, 0, "%s                 ", (*auton).get_name());
+
+    if(time % 500 == 0 && time % 5000 != 0)
+    {
+        if ((flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 200)
+            con.print(0, 0, "Fly RPM: %.1lf         ", (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2);
+        else 
+            con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+    }
+    if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
+        con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
+    if(time % 5000 == 0)
+        con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
+}
+
+void print_info_auton(int time, double error)
+{
+    if(time % 100 == 0) 
+        con.print(0, 0, "Error: %.2f         ", error);
+    if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
+        con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
+    if(time % 5000 == 0) 
+        con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
 }
 
 void calibrate_robot()
 {
     imu.reset();
     chas.reset();
+}
+
+void temp_freeze_robot (int timeout = 5000)
+{
+    int time = 0;
+    chas.stop();
+    intakeL.move(0);
+    intakeR.move(0);
+    flywheelL.move(0);
+    flywheelR.move(0);
+    glb::con.clear();
+    con.print(0, 0, "Robot Functions Frozen");
+    while (time < timeout)
+    {
+        con.print(0, 0, "Time Remaining: %ld\n         ", (timeout/1000));
+        pros::delay(1000);
+        time+=1000;
+    }
+    glb::con.clear();
+
 }
 
 Auton auton_selector(std::vector<Auton> autons)
@@ -107,7 +183,7 @@ Auton auton_selector(std::vector<Auton> autons)
         else
         {
             pros::delay(50);
-            glb::con.print(0, 0, "Selected           ");
+            glb::con.print(0, 0, "Selected           ");      
             pros::delay(2000);
             return autons.at(selected);
         }

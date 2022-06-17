@@ -59,6 +59,8 @@ namespace pid
             chas.spin_left(speed - correction);
             chas.spin_right(speed + correction);
 
+            print_info_auton(time, error);
+
             pros::delay(1);
             time++;
         }
