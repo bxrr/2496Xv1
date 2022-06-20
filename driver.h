@@ -4,6 +4,7 @@
 #include "main.h"
 #include "global.h"
 #include "lib/auton_obj.h"
+#include <string>
 #include <vector>
 
 using namespace glb;
@@ -59,23 +60,44 @@ void flywheel_toggle()
 
 void intake()
 {
+    static bool intake_hold = false;
     static bool intake_toggle = false;
+    if (intake_hold)
+    {
+        intakeL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+        intakeR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    }
+    else 
+    {
+        intakeL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+        intakeR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+    }
+
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
         intake_toggle = intake_toggle ? false : true;
-    if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
+
+    if (con.get_digital(E_CONTROLLER_DIGITAL_R1))
     {
+        intake_hold = false;
         intakeL.move(-127);
         intakeR.move(-127);
     }
+    else if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
+    {
+        intake_hold = true;
+        intakeL.move(127);
+        intakeR.move(127);
+    }
     else if(intake_toggle)
     {
+        intake_hold = false;
         intakeL.move(127);
         intakeR.move(127);
     }
     else
     {
-        intakeL.move(0);
-        intakeR.move(0);
+        intakeL.brake();
+        intakeR.brake();
     }
 }
 void tank_drive()
@@ -128,19 +150,22 @@ void calibrate_robot()
 
 void temp_freeze_robot (int timeout = 5000)
 {
-    int time = 0;
+    int time = timeout;
     chas.stop();
     intakeL.move(0);
     intakeR.move(0);
     flywheelL.move(0);
     flywheelR.move(0);
     glb::con.clear();
-    con.print(0, 0, "Robot Functions Frozen");
-    while (time < timeout)
+    delay(100);
+    con.print(0, 0, "    Frozone Active");
+    delay(100);
+    con.print(1, 0, "Time Remaining: %ld\n         ", (5));
+    while (time>0)
     {
-        con.print(0, 0, "Time Remaining: %ld\n         ", (timeout/1000));
+        con.print(1, 0, "Time Remaining: %ld\n         ", (time/1000));
         pros::delay(1000);
-        time+=1000;
+        time=time-1000;
     }
     glb::con.clear();
 

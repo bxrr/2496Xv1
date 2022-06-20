@@ -23,8 +23,8 @@ namespace glb
     pros::Imu imu(P_IMU);
     pros::Motor flywheelL(P_FLY_L, pros::E_MOTOR_GEARSET_06, true);
     pros::Motor flywheelR(P_FLY_R, pros::E_MOTOR_GEARSET_06, true);
-    pros::Motor intakeL(P_INTAKE_L, pros::E_MOTOR_GEARSET_18, false);
-    pros::Motor intakeR(P_INTAKE_R, pros::E_MOTOR_GEARSET_18, true);
+    pros::Motor intakeL(P_INTAKE_L, pros::E_MOTOR_GEARSET_18, true);
+    pros::Motor intakeR(P_INTAKE_R, pros::E_MOTOR_GEARSET_18, false);
     
     Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_18, false);
     Auton *auton;

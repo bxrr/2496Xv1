@@ -95,7 +95,7 @@ public:
 
         while((distance < 0 ? pos() > target : pos() < target) && time < timeout)
         {
-            spin(distance / abs(distance) * speed);
+            spin(distance / fabs(distance) * speed);
             pros::delay(1);
             time += 1;
         }

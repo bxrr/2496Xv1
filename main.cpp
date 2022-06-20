@@ -27,6 +27,7 @@ void opcontrol()
 	
 	while(true)
 	{
+		
 		arcade_drive();
 		flywheel_toggle();
 		intake();
@@ -37,8 +38,9 @@ void opcontrol()
 		if(con.get_digital(E_CONTROLLER_DIGITAL_RIGHT))
 			calibrate_robot();
 		if(con.get_digital(E_CONTROLLER_DIGITAL_UP))
+		{
 			temp_freeze_robot();
-		
+		}
 		delay(1);
 		time++;
 	}
