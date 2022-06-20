@@ -3,7 +3,8 @@
 
 #include "main.h"
 #include "global.h"
-
+#include "driver.h"
+using namespace glb;
 namespace pid
 {
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
@@ -39,14 +40,14 @@ namespace pid
             double speed = error * DRIVE_KP + integral * DRIVE_KI + derivative * DRIVE_KD;
 
             double correction = heading_error * IMU_K;
-            if (abs(speed) + abs(correction) > max_speed) 
+            if (fabs(speed) + fabs(correction) > max_speed) 
             {
-                double multiplier = max_speed/(abs(speed) + abs(correction));
+                double multiplier = max_speed/(fabs(speed) + fabs(correction));
                 speed *= multiplier;
                 correction *= multiplier;
             }
 
-            if (abs(error) < 1.5)
+            if (fabs(error) < 1.5)
             {
                 if(!exit)
                     exit = true;
@@ -98,13 +99,13 @@ namespace pid
 
             double speed = error * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
 
-            if (abs(speed) > max_speed) 
+            if (fabs(speed) > max_speed) 
             {
-                double multiplier = max_speed/abs(speed);
+                double multiplier = max_speed/fabs(speed);
                 speed *= multiplier;
             }
 
-            if (abs(error) < 0.2)
+            if (fabs(error) < 0.2)
             {
                 if(!exit)
                     exit = true;
