@@ -5,12 +5,16 @@
 #include "global.h"
 #include "lib/auton_obj.h"
 #include "pid.h"
+#include "pros/gps.h"
 #include <vector>
 #include <string>
 
-using namespace glb;
 using namespace pros;
 using namespace pid;
+using namespace glb;
+
+// double init_auton() {
+// }
 
 void test()
 {
