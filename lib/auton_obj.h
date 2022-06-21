@@ -29,7 +29,7 @@ public:
     std::string get_name()
     {
         return name;
-    }
+    } 
 };
 
 #endif

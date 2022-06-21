@@ -100,6 +100,7 @@ void intake()
         intakeR.brake();
     }
 }
+
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
