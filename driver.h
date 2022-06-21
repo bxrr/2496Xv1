@@ -58,6 +58,45 @@ void flywheel_toggle()
     }
 }
 
+void index(int time)
+{
+    // static bool index_toggle = false;
+    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+    //     index_toggle = index_toggle ? false : true;
+    // if(index_toggle)
+    //     indexer.set(true);
+    // else
+    //     indexer.set(false);
+
+    if(con.get_digital(E_CONTROLLER_DIGITAL_X))
+        indexer.set(true);
+    else
+        indexer.set(false);
+    
+    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+    //     index_toggle = index_toggle ? false : true;
+
+    // static int init_time;
+    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+    // {
+
+    //     if (!indexer.get_status()) 
+    //         init_time = time;
+    //     indexer.set(true);
+    // }
+    // if (indexer.get_status())
+    // {
+    //     if (init_time + 500 > time)
+    //     {
+    //         init_time++;
+    //     }
+    //     else
+    //     {
+    //         indexer.set(false);
+    //     }
+    // }
+}
+
 void intake()
 {
     static bool intake_hold = false;

@@ -14,10 +14,11 @@ namespace glb
     #define P_FL 1
     #define P_BR 12
     #define P_FR 2
-    #define P_FLY_L 4
-    #define P_FLY_R 5
+    #define P_FLY_L 16
+    #define P_FLY_R 17
     #define P_INTAKE_L 7
     #define P_INTAKE_R 8
+    #define P_INDEXER 'H'
     // objects =============================
     pros::Controller con(pros::E_CONTROLLER_MASTER);
     pros::Imu imu(P_IMU);
@@ -27,6 +28,7 @@ namespace glb
     pros::Motor intakeR(P_INTAKE_R, pros::E_MOTOR_GEARSET_18, false);
     
     Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_18, false);
+    Piston indexer(P_INDEXER, true);
     Auton *auton;
 }
 
