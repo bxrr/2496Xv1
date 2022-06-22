@@ -8,6 +8,7 @@ using namespace glb;
 namespace pid
 {
     double start_head = 0; //For Yousef: finish abs turn
+    double end_head = 0;
 
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
@@ -16,8 +17,12 @@ namespace pid
         #define DRIVE_KD 0
         #define IMU_K 0
 
+        if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
+            start_head += end_head-imu.get_heading();
+        }
+
         int starting = 180;
-        start_head -= starting;
+        // start_head -= starting;
         imu.set_heading(starting);
 
         //Set Variables
@@ -36,7 +41,6 @@ namespace pid
 
         while (time < timeout)
         {
-
             prev_error = error;
             
             //P
@@ -86,21 +90,43 @@ namespace pid
             time++;
         }
         chas.stop();
+        double diff = imu.get_heading() - starting;
+        if (fabs(diff)>2) {
+            start_head+=diff;
+        }
+        
+        end_head = imu.get_heading();
     }
 
-    void turn(double target_deg, int timeout=5000, double max_speed=127, int exit_time=100)
+    void turn(double target_deg, bool absturn=false, int timeout=5000, double max_speed=127, int exit_time=100)
     {  
         #define TURN_KP 3
         #define TURN_KI 0
         #define TURN_KD 0
 
-        if (target_deg > 150)
-            imu.set_heading(30);
-        else if (target_deg < -150)
-            imu.set_heading(330);
-        else
-            imu.set_heading(180);
+        int starting;
+
+        if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
+            start_head += end_head-imu.get_heading();
+        }
+
+        if (absturn) {
+            starting=180;
+            target_deg -= start_head;
+        }
+
+        else {
+            if (target_deg > 150)
+            starting = 30;
+            else if (target_deg < -150)
+                starting = 330;
+            else
+                starting = 180;
+        }
         
+        imu.set_heading(starting);
+        
+
         double target = target_deg + imu.get_heading();
         double error = target_deg;
         double prev_error;
@@ -142,62 +168,19 @@ namespace pid
             time++;
         }
         chas.stop();
-    }
 
-    void absturn(double target_deg, int timeout=5000, double max_speed=127, int exit_time=100) {
-        #define TURN_KP 3
-        #define TURN_KI 0
-        #define TURN_KD 0
-
-        if (target_deg > 150)
-            imu.set_heading(30);
-        else if (target_deg < -150)
-            imu.set_heading(330);
-        else
-            imu.set_heading(180);
-        
-        double target = target_deg + imu.get_heading();
-        double error = target_deg;
-        double prev_error;
-        double integral = 0;
-        double derivative = 0;
-        double error_range_time;
-
-        bool exit = false;
-
-        int time = 0;
-        while (time<timeout){
-            prev_error = error;
-            error = target - imu.get_heading();
-            integral += error;
-            derivative = error - prev_error;
-
-            double speed = error * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
-
-            if (fabs(speed) > max_speed) 
-            {
-                double multiplier = max_speed/fabs(speed);
-                speed *= multiplier;
-            }
-
-            if (fabs(error) < 0.2)
-            {
-                if(!exit)
-                    exit = true;
-                else
-                    error_range_time++;
-                if (exit_time <= error_range_time)
-                    break;
-            }
-
-            chas.spin_left(speed);
-            chas.spin_right(-speed);
-
-            pros::delay(1);
-            time++;
+        double diff = imu.get_heading() - starting;
+        if (absturn) {
+            start_head = imu.get_heading() - 180;
         }
-        chas.stop();
+
+        else {
+            start_head+=diff;
+        }
+        
+        end_head = imu.get_heading();
     }
+
 }
 
 #endif
