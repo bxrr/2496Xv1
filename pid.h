@@ -98,7 +98,7 @@ namespace pid
         end_head = imu.get_heading();
     }
 
-    void turn(double target_deg, bool absturn=false, int timeout=5000, double max_speed=127, int exit_time=100)
+    void turn(double target_deg, bool absturn=false, int timeout=2000, double max_speed=127, int exit_time=100)
     {  
         #define TURN_KP 3
         #define TURN_KI 0
@@ -109,6 +109,7 @@ namespace pid
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
             start_head += end_head-imu.get_heading();
         }
+
 
         if (absturn) {
             starting=180;
@@ -170,6 +171,7 @@ namespace pid
         chas.stop();
 
         double diff = imu.get_heading() - starting;
+        
         if (absturn) {
             start_head = imu.get_heading() - 180;
         }

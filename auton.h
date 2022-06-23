@@ -18,11 +18,8 @@ using namespace glb;
 
 void test()
 {
-    drive(2000);
-    drive(-2000);
-    turn(90);
     turn(180);
-    turn(-180);
+    turn(90,true);
 }
 
 void right()

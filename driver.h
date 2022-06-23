@@ -78,17 +78,21 @@ void index(int time)
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
     {
         init_time = (index_discs==0) ? time : init_time;
+        if (index_discs == 0)
+            indexer.set(true);
+
         index_discs++;
     }
     if (index_discs > 0)
     {
-        if (init_time + 500 < time)
+        if (init_time + 250 < time)
         {
             indexer.toggle();
             init_time = time;
             if (indexer.get_status())
                 index_discs--;
         }
+        
     }
 }
 
@@ -160,11 +164,13 @@ void print_info(int time)
             con.print(0, 0, "Fly RPM: %.1lf         ", (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2);
         else 
             con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+        screen::print(TEXT_MEDIUM, 1, "Intake RPM: %.1lf         ", (intakeL.get_actual_velocity() + intakeR.get_actual_velocity())/2);
     }
     if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 5000 == 0)
         con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
+
 }
 
 void print_info_auton(int time, double error)
