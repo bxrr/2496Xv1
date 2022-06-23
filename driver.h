@@ -44,7 +44,7 @@ void flywheel_spin()
 void flywheel_toggle()
 {
     static bool fly_toggle = false;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
         fly_toggle = fly_toggle ? false : true;
     if(fly_toggle)
     {
@@ -68,33 +68,28 @@ void index(int time)
     // else
     //     indexer.set(false);
 
-    if(con.get_digital(E_CONTROLLER_DIGITAL_X))
-        indexer.set(true);
-    else
-        indexer.set(false);
-    
-    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
-    //     index_toggle = index_toggle ? false : true;
-
-    // static int init_time;
-    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
-    // {
-
-    //     if (!indexer.get_status()) 
-    //         init_time = time;
+    // if(con.get_digital(E_CONTROLLER_DIGITAL_X))
     //     indexer.set(true);
-    // }
-    // if (indexer.get_status())
-    // {
-    //     if (init_time + 500 > time)
-    //     {
-    //         init_time++;
-    //     }
-    //     else
-    //     {
-    //         indexer.set(false);
-    //     }
-    // }
+    // else
+    //     indexer.set(false);
+
+    static int init_time;
+    static int index_discs = 0;
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+    {
+        init_time = (index_discs==0) ? time : init_time;
+        index_discs++;
+    }
+    if (index_discs > 0)
+    {
+        if (init_time + 500 < time)
+        {
+            indexer.toggle();
+            init_time = time;
+            if (indexer.get_status())
+                index_discs--;
+        }
+    }
 }
 
 void intake()
