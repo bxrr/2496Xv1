@@ -8,6 +8,7 @@ using namespace glb;
 namespace pid
 {
     double start_head = 0; //For Yousef: finish abs turn
+    //For Brandon: improve
     double end_head = 0;
 
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)

@@ -36,11 +36,11 @@ void opcontrol()
 		index(time);
 		print_info(time);
 
-		if(con.get_digital(E_CONTROLLER_DIGITAL_DOWN))
-			autonomous();
-		if(con.get_digital(E_CONTROLLER_DIGITAL_RIGHT))
-			calibrate_robot();
 		if(con.get_digital(E_CONTROLLER_DIGITAL_UP))
+			autonomous();
+		if(con.get_digital(E_CONTROLLER_DIGITAL_LEFT))
+			calibrate_robot();
+		if(con.get_digital(E_CONTROLLER_DIGITAL_A))
 			temp_freeze_robot();
 		delay(1);
 		time++;

@@ -29,7 +29,7 @@ void arcade_drive()
 
 void flywheel_spin()
 {
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
     {
         flywheelL.move(127);
         flywheelR.move(127);
@@ -44,7 +44,7 @@ void flywheel_spin()
 void flywheel_toggle()
 {
     static bool fly_toggle = false;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
         fly_toggle = fly_toggle ? false : true;
     if(fly_toggle)
     {
@@ -75,7 +75,7 @@ void index(int time)
 
     static int init_time;
     static int index_discs = 0;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
     {
         init_time = (index_discs==0) ? time : init_time;
         if (index_discs == 0)
@@ -98,51 +98,32 @@ void index(int time)
 
 void intake()
 {
-    static bool intake_hold = false;
     static bool intake_toggle = false;
-    if (intake_hold)
-    {
-        intakeL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-        intakeR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    }
-    else 
-    {
-        intakeL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-        intakeR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-    }
 
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
         intake_toggle = intake_toggle ? false : true;
 
-    if (con.get_digital(E_CONTROLLER_DIGITAL_R1))
+    if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
     {
-        intake_hold = false;
         intakeL.move(-127);
         intakeR.move(-127);
     }
-    else if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
-    {
-        intake_hold = true;
-        intakeL.move(127);
-        intakeR.move(127);
-    }
     else if(intake_toggle)
     {
-        intake_hold = false;
         intakeL.move(127);
         intakeR.move(127);
     }
     else
     {
-        intakeL.brake();
-        intakeR.brake();
+        intakeL.move(0);
+        intakeR.move(0);
     }
 }
 
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
-    double right = abs(con.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) : 0;
+    double right = abs(con.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y) : 0;
 
     if(left || right)
     {
@@ -206,9 +187,11 @@ void temp_freeze_robot (int timeout = 5000)
     {
         con.print(1, 0, "Time Remaining: %ld\n         ", (time/1000));
         pros::delay(1000);
-        time=time-1000;
+        time-=1000;
     }
     glb::con.clear();
+    delay(100);
+    con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
 
 }
 
