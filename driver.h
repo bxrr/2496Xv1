@@ -62,66 +62,65 @@ void flywheel_toggle()
 }
 
 void flywheelPID(int time)
+{
+    //define vars (FLY_INCREMENT and FLY_K defined at top ^)
+    static double current_rpm;
+    static double speed;
+    static double target_rpm = 420;
+    static bool fly_toggle = false;
+
+    //update vars
+    current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
+
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+        fly_toggle = fly_toggle ? false : true;
+
+    if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     {
-        //define vars (FLY_INCREMENT and FLY_K defined at top ^)
-        static double current_rpm;
-        static double speed;
-        static double target_rpm = 420;
-        static bool fly_toggle = false;
-
-        //update vars
-        current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
-
-        if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
-            fly_toggle = fly_toggle ? false : true;
-
-        if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
-        {
-            target_rpm += FLY_INCREMENT;
-            if (target_rpm > 600)
-                target_rpm = 600;
-        }
-        else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
-        {
-            target_rpm -= FLY_INCREMENT;
-        }
-        
-        //adjusting voltage to match target
-        if (fly_toggle)
-        {
-            if (current_rpm + 100 < target_rpm)
-                speed == 127;
-            else if (target_rpm-10 < current_rpm && current_rpm < target_rpm+10)
-            {
-                // dont do antyhgn
-            }
-            else if (current_rpm <= target_rpm)
-            {
-                speed += (target_rpm - current_rpm)*FLY_K;
-                if (speed>127)
-                    speed = 127;
-            }
-            else
-            {
-                speed -= (current_rpm - target_rpm)*FLY_K;
-                if (speed < (target_rpm * (127/600) - 50)) //calculates "normal" speed and subtracting 50 to adjust for going slower
-                    speed = (target_rpm * (127/600) - 50);  //this ^ isnt on the previous one to compensate for burnouts
-            }
-            flywheelL.move(speed);
-            flywheelR.move(speed);
-        }
-
-        //coasts flywheel if not active
-        else 
-        {
-            flywheelL.brake();
-            flywheelR.brake();
-        }
-        // print rpm
-        if (time % 500 == 0 && time % 5000 != 0 && current_rpm > 100)
-            con.print(0, 0, "%.1lf | %.1lf", current_rpm, target_rpm);
-        
+        target_rpm += FLY_INCREMENT;
+        if (target_rpm > 600)
+            target_rpm = 600;
     }
+    else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
+    {
+        target_rpm -= FLY_INCREMENT;
+    }
+
+    //adjusting voltage to match target
+    if (fly_toggle)
+    {
+        if (current_rpm + 100 < target_rpm)
+            speed == 127;
+        else if (target_rpm-10 < current_rpm && current_rpm < target_rpm+10)
+        {
+            // dont do antyhgn
+        }
+        else if (current_rpm <= target_rpm)
+        {
+            speed += (target_rpm - current_rpm)*FLY_K;
+            if (speed>127)
+                speed = 127;
+        }
+        else
+        {
+            speed -= (current_rpm - target_rpm)*FLY_K;
+            if (speed < (target_rpm * (127/600) - 50)) //calculates "normal" speed and subtracting 50 to adjust for going slower
+                speed = (target_rpm * (127/600) - 50);  //this ^ isnt on the previous one to compensate for burnouts
+        }
+        flywheelL.move(speed);
+        flywheelR.move(speed);
+    }
+
+    //coasts flywheel if not active
+    else 
+    {
+        flywheelL.brake();
+        flywheelR.brake();
+    }
+    // print rpm
+    if (time % 500 == 0 && time % 5000 != 0 && current_rpm > 100)
+        con.print(0, 0, "%.1lf | %.1lf", current_rpm, target_rpm);
+}
 
 
 
