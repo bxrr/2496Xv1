@@ -9,11 +9,11 @@
 namespace glb
 {
     // ports ===============================
-    #define P_IMU 10
+    #define P_IMU 1
     #define P_BL 11
-    #define P_FL 1
-    #define P_BR 12
-    #define P_FR 2
+    #define P_FL 12
+    #define P_BR 14
+    #define P_FR 13
     #define P_FLY_L 16
     #define P_FLY_R 17
     #define P_INTAKE_L 7

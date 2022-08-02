@@ -18,18 +18,20 @@ using namespace glb;
 
 void test()
 {
-    turn(180);
+    // drive(500);
+    // turn(180);
+    turn(-90,true);
     turn(90,true);
 }
 
 void right()
 {
-    
+    drive(500);
 }
 
 void left()
 {
-    
+    drive(500);
 }
 
 std::vector<Auton> autons

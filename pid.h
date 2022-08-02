@@ -7,7 +7,8 @@
 using namespace glb;
 namespace pid
 {
-    double start_head = 0; //For Yousef: finish abs turn
+    double start_head = 0; 
+    //For Yousef: finish abs turn
     //For Brandon: improve
     double end_head = 0;
 
@@ -113,13 +114,21 @@ namespace pid
 
 
         if (absturn) {
-            starting=180;
+            if (target_deg>150) {
+                starting=30;
+            }
+            else if (target_deg<-150) {
+                starting=330;
+            }
+            else {
+                starting=180;
+            }
             target_deg -= start_head;
         }
 
         else {
             if (target_deg > 150)
-            starting = 30;
+                starting = 30;
             else if (target_deg < -150)
                 starting = 330;
             else
