@@ -11,7 +11,7 @@ using namespace glb;
 using namespace pros;
 
 // vars for flywheel PID
-#define FLY_K 1
+#define FLY_K 0.05
 #define FLY_INCREMENT 20
 
 void arcade_drive()
@@ -65,14 +65,14 @@ void flywheelPID(int time)
 {
     //define vars (FLY_INCREMENT and FLY_K defined at top ^)
     static double current_rpm;
-    static double speed;
-    static double target_rpm = 420;
+    static double speed = 0;
+    static double target_rpm = 200;
     static bool fly_toggle = false;
 
     //update vars
     current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
         fly_toggle = fly_toggle ? false : true;
 
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
@@ -89,9 +89,10 @@ void flywheelPID(int time)
     //adjusting voltage to match target
     if (fly_toggle)
     {
-        if (current_rpm + 100 < target_rpm)
-            speed == 127;
-        else if (target_rpm-10 < current_rpm && current_rpm < target_rpm+10)
+        // if (current_rpm + 100 < target_rpm)
+        //     speed = 127;
+        // else 
+        if (target_rpm - 25 <= current_rpm && current_rpm <= target_rpm + 25)
         {
             // dont do antyhgn
         }
@@ -101,12 +102,13 @@ void flywheelPID(int time)
             if (speed>127)
                 speed = 127;
         }
-        else
+        else if (current_rpm >= target_rpm)
         {
             speed -= (current_rpm - target_rpm)*FLY_K;
-            if (speed < (target_rpm * (127/600) - 50)) //calculates "normal" speed and subtracting 50 to adjust for going slower
-                speed = (target_rpm * (127/600) - 50);  //this ^ isnt on the previous one to compensate for burnouts
+            if (speed < (target_rpm * 0.2)) //calculates "normal" speed and subtracting 50 to adjust for going slower
+                speed = (target_rpm * 0.2);  //this ^ isnt on the previous one to compensate for burnouts
         }
+
         flywheelL.move(speed);
         flywheelR.move(speed);
     }
@@ -118,8 +120,11 @@ void flywheelPID(int time)
         flywheelR.brake();
     }
     // print rpm
-    if (time % 500 == 0 && time % 5000 != 0 && current_rpm > 100)
-        con.print(0, 0, "%.1lf | %.1lf", current_rpm, target_rpm);
+    if (time % 50 == 0 && time % 100 != 0)
+        con.print(0, 0, "%.2f : %.2f", flywheelR.get_actual_velocity(), flywheelL.get_actual_velocity());
+    if (time % 100 == 0)
+        con.print(1, 0, "%.2f : %.2f", speed, target_rpm);
+
 }
 
 
@@ -205,12 +210,12 @@ void tank_drive()
 void print_info(int time)
 {
 
-    if(time % 500 == 0 && time % 5000 != 0)
-    {
-        if ((flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100) 
-            con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
-        screen::print(TEXT_MEDIUM, 1, "Intake RPM: %.1lf         ", (intakeL.get_actual_velocity() + intakeR.get_actual_velocity())/2);
-    }
+    // if(time % 500 == 0 && time % 5000 != 0)
+    // {
+    //     if ((flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100) 
+    //         con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+    //     screen::print(TEXT_MEDIUM, 1, "Intake RPM: %.1lf         ", (intakeL.get_actual_velocity() + intakeR.get_actual_velocity())/2);
+    // }
     if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 5000 == 0)

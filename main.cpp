@@ -36,10 +36,10 @@ void opcontrol()
 	{
 		
 		arcade_drive();
-		flywheel_toggle();
+		flywheelPID(time);
 		intake();
 		index(time);
-		print_info(time);
+		//print_info(time);
 
 		if(con.get_digital(E_CONTROLLER_DIGITAL_UP))
 			autonomous();
