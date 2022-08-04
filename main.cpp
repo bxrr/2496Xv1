@@ -37,9 +37,9 @@ void opcontrol()
 		
 		arcade_drive();
 		flywheelPID(time);
-		intake();
-		index(time);
-		//print_info(time);
+		intake_hold();
+		//index(time);
+		print_info(time);
 
 		if(con.get_digital(E_CONTROLLER_DIGITAL_UP))
 			autonomous();
@@ -47,6 +47,7 @@ void opcontrol()
 			calibrate_robot();
 		if(con.get_digital(E_CONTROLLER_DIGITAL_A))
 			temp_freeze_robot();
+		
 		delay(1);
 		time++;
 	}

@@ -66,7 +66,7 @@ void flywheelPID(int time)
     //define vars (FLY_INCREMENT and FLY_K defined at top ^)
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 420;
+    static double target_rpm = 600;
     static bool fly_toggle = false;
 
     //update vars
@@ -125,7 +125,7 @@ void flywheelPID(int time)
         flywheelR.brake();
     }
     // print rpm
-    if (time % 50 == 0)
+    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
         con.print(0, 0, "%.2f : %.2f", current_rpm, target_rpm);
 }
 
@@ -169,19 +169,43 @@ void index(int time)
     }
 }
 
-void intake()
+void intake_toggle()
 {
     static bool intake_toggle = false;
 
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
         intake_toggle = intake_toggle ? false : true;
 
-    if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
+    if (con.get_digital(E_CONTROLLER_DIGITAL_R1))
+    {
+        intakeL.move(-127);
+        intakeR.move(-127);
+    }
+    else if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
     {
         intakeL.move(127);
         intakeR.move(127);
     }
     else if(intake_toggle)
+    {
+        intakeL.move(127);
+        intakeR.move(127);
+    }
+    else
+    {
+        intakeL.move(0);
+        intakeR.move(0);
+    }
+}
+
+void intake_hold()
+{
+    if (con.get_digital(E_CONTROLLER_DIGITAL_L2))
+    {
+        intakeL.move(-127);
+        intakeR.move(-127);
+    }
+    else if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
     {
         intakeL.move(127);
         intakeR.move(127);
@@ -212,17 +236,11 @@ void tank_drive()
 void print_info(int time)
 {
 
-    if(time % 500 == 0 && time % 5000 != 0)
-    {
-        if ((flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100) 
-            con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
-        else
-            con.print(0, 0, "Fly RPM: %.1lf         ", (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2);
-        screen::print(TEXT_MEDIUM, 1, "Intake RPM: %.1lf         ", (intakeL.get_actual_velocity() + intakeR.get_actual_velocity())/2);
-    }
-    if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
+    if(time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100)
+        con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+    if(time % 100 == 0 && time % 150 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
-    if(time % 5000 == 0)
+    if(time % 150 == 0)
         con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
 
 }

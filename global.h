@@ -16,8 +16,8 @@ namespace glb
     #define P_FR 13
     #define P_FLY_L 16
     #define P_FLY_R 17
-    #define P_INTAKE_L 7
-    #define P_INTAKE_R 8
+    #define P_INTAKE_L 18
+    #define P_INTAKE_R 19
     #define P_INDEXER 'H'
     // objects =============================
     pros::Controller con(pros::E_CONTROLLER_MASTER);
