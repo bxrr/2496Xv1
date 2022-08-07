@@ -131,7 +131,7 @@ void flywheelPID(int time)
 
 
 
-void index(int time)
+void index()
 {
     // static bool index_toggle = false;
     // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
@@ -146,27 +146,31 @@ void index(int time)
     // else
     //     indexer.set(false);
 
-    static int init_time;
-    static int index_discs = 0;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
-    {
-        init_time = (index_discs==0) ? time : init_time;
-        if (index_discs == 0)
-            indexer.set(true);
+    // static int init_time;
+    // static int index_discs = 0;
+    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
+    // {
+    //     init_time = (index_discs==0) ? time : init_time;
+    //     if (index_discs == 0)
+    //         indexer.set(true);
 
-        index_discs++;
-    }
-    if (index_discs > 0)
-    {
-        if (init_time + 250 < time)
-        {
-            indexer.toggle();
-            init_time = time;
-            if (indexer.get_status())
-                index_discs--;
-        }
+    //     index_discs++;
+    // }
+    // if (index_discs > 0)
+    // {
+    //     if (init_time + 250 < time)
+    //     {
+    //         indexer.toggle();
+    //         init_time = time;
+    //         if (indexer.get_status())
+    //             index_discs--;
+    //     }
         
-    }
+    // }
+    if (con.get_digital(E_CONTROLLER_DIGITAL_R2))
+        indexer.set(false);
+    else   
+        indexer.set(true);
 }
 
 void intake_toggle()

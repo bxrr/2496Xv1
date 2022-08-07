@@ -38,7 +38,7 @@ void opcontrol()
 		arcade_drive();
 		flywheelPID(time);
 		intake_hold();
-		//index(time);
+		index();
 		print_info(time);
 
 		if(con.get_digital(E_CONTROLLER_DIGITAL_UP))
