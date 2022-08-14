@@ -26,8 +26,8 @@ void opcontrol()
 {
 	int time = 0;
 	indexer.set(false);
-	flywheelL.set_brake_mode(E_MOTOR_BRAKE_COAST);
-	flywheelR.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+	flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 	intakeL.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	intakeR.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	
