@@ -12,7 +12,6 @@ using namespace pros;
 
 // vars for flywheel PID
 #define FLY_K 0.25
-#define FLY_INCREMENT 20
 
 void arcade_drive()
 {
@@ -66,7 +65,7 @@ void flywheelPID(int time)
     //define vars (FLY_INCREMENT and FLY_K defined at top ^)
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 600;
+    static double target_rpm = 400;
     static bool fly_toggle = false;
 
     //update vars
@@ -77,15 +76,16 @@ void flywheelPID(int time)
 
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     {
-        target_rpm += FLY_INCREMENT;
-        if (target_rpm > 600)
-            target_rpm = 600;
+        target_rpm = 480;
+
+        // if (target_rpm > 600)
+        //     target_rpm = 600;
     }
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
     {
-        target_rpm -= FLY_INCREMENT;
-        if (target_rpm < 100)
-            target_rpm = 100;
+        target_rpm = 400;
+        // if (target_rpm < 100)
+        //     target_rpm = 100;
     }
 
     //adjusting voltage to match target
