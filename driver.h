@@ -76,16 +76,16 @@ void flywheelPID(int time)
 
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     {
-        target_rpm = 480;
+        // target_rpm = 480;
 
-        // if (target_rpm > 600)
-        //     target_rpm = 600;
+        if (target_rpm > 600)
+            target_rpm = 600;
     }
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
     {
-        target_rpm = 400;
-        // if (target_rpm < 100)
-        //     target_rpm = 100;
+        // target_rpm = 400;
+        if (target_rpm < 100)
+            target_rpm = 100;
     }
 
     //adjusting voltage to match target
@@ -105,9 +105,9 @@ void flywheelPID(int time)
         //     if (speed < (target_rpm * 0.205)) //calculates "normal" speed and subtracting 50 to adjust for going slower
         //         speed = (target_rpm * 0.205);  //this ^ isnt on the previous one to compensate for burnouts
         // }
-        if (current_rpm < target_rpm - 10 && current_rpm > target_rpm - 55)
+        if (current_rpm < target_rpm - 20)
         {
-            speed += FLY_K;
+            speed = 127;
         }
         else
         {
@@ -131,11 +131,16 @@ void flywheelPID(int time)
 
 
 
-void index()
+void index(int time)
 {
-    // static bool index_toggle = false;
-    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
-    //     index_toggle = index_toggle ? false : true;
+    static int init_time;
+    static int discs = 0;
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+    {
+        init_time = time;
+        discs = 3;
+        indexer.set(true);
+    }
     // if(index_toggle)
     //     indexer.set(true);
     // else
@@ -145,32 +150,20 @@ void index()
     //     indexer.set(true);
     // else
     //     indexer.set(false);
-
-    // static int init_time;
-    // static int index_discs = 0;
-    // if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
-    // {
-    //     init_time = (index_discs==0) ? time : init_time;
-    //     if (index_discs == 0)
-    //         indexer.set(true);
-
-    //     index_discs++;
-    // }
-    // if (index_discs > 0)
-    // {
-    //     if (init_time + 250 < time)
-    //     {
-    //         indexer.toggle();
-    //         init_time = time;
-    //         if (indexer.get_status())
-    //             index_discs--;
-    //     }
-        
-    // }
-    if (con.get_digital(E_CONTROLLER_DIGITAL_R2))
-        indexer.set(false);
-    else   
-        indexer.set(true);
+    if (discs > 0)
+    {
+        if (indexer.get_status() && time - init_time > 250)
+        {
+            indexer.toggle();
+            discs--;
+            init_time = time;
+        }
+        if (!indexer.get_status() && time - init_time > 1000)
+        {
+            indexer.toggle();
+            init_time = time;
+        }
+    }
 }
 
 void intake_toggle()
