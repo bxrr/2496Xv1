@@ -105,14 +105,10 @@ void flywheelPID(int time)
         //     if (speed < (target_rpm * 0.205)) //calculates "normal" speed and subtracting 50 to adjust for going slower
         //         speed = (target_rpm * 0.205);  //this ^ isnt on the previous one to compensate for burnouts
         // }
-        if (current_rpm < target_rpm - 20)
-        {
+        if (current_rpm < target_rpm - 25)
             speed = 127;
-        }
         else
-        {
             speed = target_rpm * 0.212;
-        }
 
         flywheelL.move(speed);
         flywheelR.move(speed);
@@ -141,15 +137,13 @@ void index(int time)
         discs = 3;
         indexer.set(true);
     }
-    // if(index_toggle)
-    //     indexer.set(true);
-    // else
-    //     indexer.set(false);
+    if(con.get_digital(E_CONTROLLER_DIGITAL_R1))
+    {
+        discs = 0;
+        indexer.set(true);
+    }
 
-    // if(con.get_digital(E_CONTROLLER_DIGITAL_X))
-    //     indexer.set(true);
-    // else
-    //     indexer.set(false);
+
     if (discs > 0)
     {
         if (indexer.get_status() && time - init_time > 250)
@@ -164,6 +158,8 @@ void index(int time)
             init_time = time;
         }
     }
+    else 
+        indexer.set(false);
 }
 
 void intake_toggle()
