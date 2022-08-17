@@ -4,7 +4,7 @@
 #include "main.h"
 #include "global.h"
 #include "lib/auton_obj.h"
-#include <string>
+#include <string>//brandon sux
 #include <vector>
 
 using namespace glb;
@@ -43,7 +43,7 @@ void flywheel_spin()
     }
 }
 
-void flywheel_toggle()
+void flywheel_toggle(int time)
 {
     static bool fly_toggle = false;
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
@@ -58,6 +58,8 @@ void flywheel_toggle()
         flywheelL.move(0);
         flywheelR.move(0);
     }
+    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
+        con.print(0, 0, "%.2f", (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2);
 }
 
 void flywheelPID(int time)
@@ -77,13 +79,14 @@ void flywheelPID(int time)
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     {
         // target_rpm = 480;
-
+        target_rpm += 20;
         if (target_rpm > 600)
             target_rpm = 600;
     }
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
     {
         // target_rpm = 400;
+        target_rpm -= 20;
         if (target_rpm < 100)
             target_rpm = 100;
     }
@@ -105,7 +108,7 @@ void flywheelPID(int time)
         //     if (speed < (target_rpm * 0.205)) //calculates "normal" speed and subtracting 50 to adjust for going slower
         //         speed = (target_rpm * 0.205);  //this ^ isnt on the previous one to compensate for burnouts
         // }
-        if (current_rpm < target_rpm - 25)
+        if (current_rpm < target_rpm - (target_rpm * 0.077))
             speed = 127;
         else
             speed = target_rpm * 0.212;
@@ -140,26 +143,28 @@ void index(int time)
     if(con.get_digital(E_CONTROLLER_DIGITAL_R1))
     {
         discs = 0;
-        indexer.set(true);
+        indexer.set(true);//gerald was here
     }
-
-
-    if (discs > 0)
+    else
     {
-        if (indexer.get_status() && time - init_time > 250)
+
+        if (discs > 0)
         {
-            indexer.toggle();
-            discs--;
-            init_time = time;
+            if (indexer.get_status() && time - init_time > 200)
+            {
+                indexer.toggle();
+                discs--;
+                init_time = time;
+            }
+            if (!indexer.get_status() && time - init_time > 400)
+            {
+                indexer.toggle();
+                init_time = time;
+            }
         }
-        if (!indexer.get_status() && time - init_time > 1000)
-        {
-            indexer.toggle();
-            init_time = time;
-        }
+        else 
+            indexer.set(false);
     }
-    else 
-        indexer.set(false);
 }
 
 void intake_toggle()
@@ -217,7 +222,7 @@ void tank_drive()
 
     if(left || right)
     {
-        chas.spin_left(left);
+        chas.spin_left(left);//i<3jer
         chas.spin_right(right);
     }
     else
@@ -225,6 +230,9 @@ void tank_drive()
         chas.stop();
     }
 }
+//this is brandon
+//i lovve manga
+//i type at 170 wpm
 
 void print_info(int time)
 {
