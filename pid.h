@@ -14,9 +14,9 @@ namespace pid
 
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
-        #define DRIVE_KP 0.25
-        #define DRIVE_KI 0
-        #define DRIVE_KD 0
+        #define DRIVE_KP 0.15
+        #define DRIVE_KI 0.01
+        #define DRIVE_KD 5
         #define IMU_K 0
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
@@ -36,6 +36,7 @@ namespace pid
         double init_heading = imu.get_heading();
         double heading_error = 0;
         double error_range_time = 0;
+        bool start_positive = target_dist >= 0 ? true : false;
 
         bool exit = false;
 
@@ -48,7 +49,7 @@ namespace pid
             //P
             error = target - chas.pos();
             //I
-            integral += error;
+            integral += error * start_positive ? (error < 0) : (error > 0);
             //D
             derivative = error - prev_error;
 
@@ -61,7 +62,7 @@ namespace pid
             //Heading correction
             double correction = heading_error * IMU_K;
 
-            //Cap speed and correction sum to ma
+            //Cap speed and correction sum to max
             if (fabs(speed) + fabs(correction) > max_speed) 
             {
                 double multiplier = max_speed/(fabs(speed) + fabs(correction));

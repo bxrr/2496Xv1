@@ -27,6 +27,8 @@ void test()
 void right()
 {
     drive(500);
+    drive(-1000);
+    drive(2000);
 }
 
 void left()
