@@ -67,7 +67,7 @@ void flywheelPID(int time)
     //define vars (FLY_INCREMENT and FLY_K defined at top ^)
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 400;
+    static double target_rpm = 520;
     static bool fly_toggle = false;
 
     //update vars
@@ -79,14 +79,14 @@ void flywheelPID(int time)
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     {
         // target_rpm = 480;
-        target_rpm += 20;
+        target_rpm += 10;
         if (target_rpm > 600)
             target_rpm = 600;
     }
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
     {
         // target_rpm = 400;
-        target_rpm -= 20;
+        target_rpm -= 10;
         if (target_rpm < 100)
             target_rpm = 100;
     }
@@ -108,7 +108,7 @@ void flywheelPID(int time)
         //     if (speed < (target_rpm * 0.205)) //calculates "normal" speed and subtracting 50 to adjust for going slower
         //         speed = (target_rpm * 0.205);  //this ^ isnt on the previous one to compensate for burnouts
         // }
-        if (current_rpm < target_rpm - (target_rpm * 0.077))
+        if (current_rpm < (target_rpm+20))
             speed = 127;
         else
             speed = target_rpm * 0.212;
