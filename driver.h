@@ -215,6 +215,62 @@ void intake_hold()
     }
 }
 
+void auto_roller(int time)
+{
+    static int auto_toggle = 0;
+    double hue = optical.get_hue();
+    static int init_time = 0;
+
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_UP))
+        auto_toggle = (auto_toggle == 0) ? 1 : 0;
+    
+    if (con.get_digital(E_CONTROLLER_DIGITAL_L2))
+    {
+        intakeL.move(-127);
+        intakeR.move(-127);
+    }
+    else if (con.get_digital(E_CONTROLLER_DIGITAL_L1))
+    {
+        intakeL.move(127);
+        intakeR.move(127);
+    }
+
+    else if(auto_toggle == 1)
+    {
+        optical.set_led_pwm(100);
+        if (340 < hue || hue < 20)
+        {
+            auto_toggle = 2;
+        }
+        intakeL.move(-80);
+        intakeR.move(-80);
+    }
+    else if(auto_toggle == 2)
+    {
+        intakeL.move(-80);
+        intakeR.move(-80);
+        if (200 < hue && hue < 260)
+        {
+            auto_toggle = 3;
+            init_time = time;
+        }
+    }
+    else if(auto_toggle == 3)
+    {
+        intakeL.move(80);
+        intakeR.move(80);
+        if(time - init_time >= 20)
+            auto_toggle = 0;
+    }
+    else
+    {
+        intakeL.move(0);
+        intakeR.move(0);
+        optical.set_led_pwm(0);
+    }
+
+}
+
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
@@ -238,7 +294,8 @@ void print_info(int time)
 {
 
     if(time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100)
-        con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+        //con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
+        con.print(0, 0, "Hue: %.1lf         ", optical.get_hue()); 
     if(time % 100 == 0 && time % 150 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 150 == 0)

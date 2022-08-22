@@ -37,7 +37,8 @@ void opcontrol()
 		
 		arcade_drive();
 		flywheelPID(time);
-		intake_hold();
+		//intake_hold();
+		auto_roller(time);
 		index(time);
 		print_info(time);
 
