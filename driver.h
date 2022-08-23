@@ -12,6 +12,8 @@ using namespace pros;
 
 // vars for flywheel PID
 #define FLY_K 0.25
+//var for auto roller
+bool isRed = true;
 
 void arcade_drive()
 {
@@ -26,20 +28,6 @@ void arcade_drive()
     else
     {
         chas.stop();
-    }
-}
-
-void flywheel_spin()
-{
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
-    {
-        flywheelL.move(127);
-        flywheelR.move(127);
-    }
-    else
-    {
-        flywheelL.move(0);
-        flywheelR.move(0);
     }
 }
 
@@ -117,7 +105,7 @@ void flywheelPID(int time)
         flywheelR.move(speed);
     }
 
-    //coasts flywheel if not active
+    // flywheel if not active
     else 
     {
         flywheelL.brake();
@@ -349,40 +337,56 @@ Auton auton_selector(std::vector<Auton> autons)
     short int selected = 0;
     int timer = 0;
 
-    bool left_first = true;
-    bool right_first = true;
+    // bool left_first = true;
+    // bool right_first = true;
 
     while(true)
     {
         if(!glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_A))
         {
-            if(timer % 10 == 0) glb::con.print(0, 0, "Select: %s         ", autons.at(selected).get_name());
+            if(timer % 50 == 0 && timer % 100 != 0) 
+                glb::con.print(0, 0, "Select: %s         ", autons.at(selected).get_name());
+            if(timer % 100 == 0) 
+                glb::con.print(1, 0, "Color: %s         ", isRed ? "Red" : "Blue");
 
-            if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
-            {
-                if(left_first)
-                {
-                    left_first = false;
-                    if(selected > 0) selected--;
-                }
-            }
-            else left_first = true;
+            // if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
+            // {
+            //     if(left_first)
+            //     {
+            //         left_first = false;
+            //         if(selected > 0) selected--;
+            //     }
+            // }
+            // else left_first = true;
 
-            if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
-            {
-                if(right_first)
-                {
-                    right_first = false;
-                    if(selected < autons.size()-1) selected++;
-                }
-            }
-            else right_first = true;
+            // if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
+            // {
+            //     if(right_first)
+            //     {
+            //         right_first = false;
+            //         if(selected < autons.size()-1) selected++;
+            //     }
+            // }
+            // else right_first = true;
+            if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT) && selected > 0)
+                selected--;
+
+            if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT) && selected < autons.size()-1)
+                selected++;
+
+            if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+                isRed = !isRed;
         }
         else
         {
             pros::delay(50);
-            glb::con.print(0, 0, "Selected           ");      
-            pros::delay(2000);
+            glb::con.print(1, 0, "Selected Items:"); 
+            pros::delay(50);
+            //glb::con.print(0, 0, "Selected           ");   
+            glb::con.print(1, 0, "Auton: %s         ", autons.at(selected).get_name());   
+            pros::delay(50);
+            glb::con.print(2, 0, "Color: %s         ", isRed ? "Red" : "Blue");
+            pros::delay(1500);
             return autons.at(selected);
         }
 
