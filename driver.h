@@ -242,13 +242,13 @@ void auto_roller(int time)
         {
             auto_toggle = 2;
         }
-        intakeL.move(-80);
-        intakeR.move(-80);
+        intakeL.move(-100);
+        intakeR.move(-100);
     }
     else if(auto_toggle == 2)
     {
-        intakeL.move(-80);
-        intakeR.move(-80);
+        intakeL.move(-100);
+        intakeR.move(-100);
         if (200 < hue && hue < 260)
         {
             auto_toggle = 3;
@@ -257,9 +257,9 @@ void auto_roller(int time)
     }
     else if(auto_toggle == 3)
     {
-        intakeL.move(80);
-        intakeR.move(80);
-        if(time - init_time >= 20)
+        intakeL.move(100);
+        intakeR.move(100);
+        if(time - init_time >= 200)
             auto_toggle = 0;
     }
     else
@@ -270,7 +270,7 @@ void auto_roller(int time)
     }
 
 }
-
+//aayush.seh
 void tank_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
