@@ -113,7 +113,7 @@ void flywheelPID(int time)
     }
     // print rpm
     if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
-        con.print(0, 0, "%.2f : %.2f", current_rpm, target_rpm);
+        con.print(0, 0, "%.2f : %.2f           ", current_rpm, target_rpm);
 }
 
 
@@ -226,10 +226,17 @@ void auto_roller(int time)
     else if(auto_toggle == 1)
     {
         optical.set_led_pwm(100);
-        if (340 < hue || hue < 20)
+        if (isRed)
         {
-            auto_toggle = 2;
+            if (340 < hue || hue < 20)
+                auto_toggle = 2;
         }
+        else
+        {
+            if (200 < hue && hue < 260)
+                auto_toggle = 2;
+        }
+
         intakeL.move(-100);
         intakeR.move(-100);
     }
@@ -237,11 +244,23 @@ void auto_roller(int time)
     {
         intakeL.move(-100);
         intakeR.move(-100);
-        if (200 < hue && hue < 260)
+        if (isRed)
         {
-            auto_toggle = 3;
-            init_time = time;
+            if (200 < hue && hue < 260)
+            {
+                auto_toggle = 3;
+                init_time = time;
+            }
         }
+        else
+        {
+            if (340 < hue || hue < 20)
+            {
+                auto_toggle = 3;
+                init_time = time;
+            }
+        }
+
     }
     else if(auto_toggle == 3)
     {
@@ -347,7 +366,7 @@ Auton auton_selector(std::vector<Auton> autons)
             if(timer % 50 == 0 && timer % 100 != 0) 
                 glb::con.print(0, 0, "Select: %s         ", autons.at(selected).get_name());
             if(timer % 100 == 0) 
-                glb::con.print(1, 0, "Color: %s         ", isRed ? "Red" : "Blue");
+                glb::con.print(1, 0, "Color: %s         ", isRed ? "Red      " : "Blue       ");
 
             // if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
             // {
@@ -374,13 +393,15 @@ Auton auton_selector(std::vector<Auton> autons)
             if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT) && selected < autons.size()-1)
                 selected++;
 
-            if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+            if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP) || glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN))
                 isRed = !isRed;
         }
         else
         {
             pros::delay(50);
-            glb::con.print(1, 0, "Selected Items:"); 
+            glb::con.clear();
+            pros::delay(50);
+            glb::con.print(0, 0, "Selected Items:         "); 
             pros::delay(50);
             //glb::con.print(0, 0, "Selected           ");   
             glb::con.print(1, 0, "Auton: %s         ", autons.at(selected).get_name());   
