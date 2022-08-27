@@ -14,7 +14,7 @@ namespace pid
 
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
-        #define DRIVE_KP 0.11475 //0.118 was good one day
+        #define DRIVE_KP 0.11778
         #define DRIVE_KI 0 //0.01
         #define DRIVE_KD 0 //5
         #define IMU_K 0
