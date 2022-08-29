@@ -11,7 +11,6 @@ using namespace glb;
 using namespace pros;
 
 // vars for flywheel PID
-#define FLY_K 0.25
 //var for auto roller
 bool isRed = true;
 
@@ -52,7 +51,6 @@ void flywheel_toggle(int time)
 
 void flywheelPID(int time)
 {
-    //define vars (FLY_INCREMENT and FLY_K defined at top ^)
     static double current_rpm;
     static double speed = 0;
     static double target_rpm = 520;
@@ -82,20 +80,6 @@ void flywheelPID(int time)
     //adjusting voltage to match target
     if (fly_toggle)
     {
-        // if (current_rpm + 100 < target_rpm)
-        //     speed = 127;
-        // else        else if (current_rpm <= target_rpm)
-        // {
-        //     speed += (target_rpm - current_rpm)*FLY_K;
-        //     if (speed>127)
-        //         speed = 127;
-        // }
-        // else if (current_rpm >= target_rpm)
-        // {
-        //     speed -= (current_rpm - target_rpm)*FLY_K;
-        //     if (speed < (target_rpm * 0.205)) //calculates "normal" speed and subtracting 50 to adjust for going slower
-        //         speed = (target_rpm * 0.205);  //this ^ isnt on the previous one to compensate for burnouts
-        // }
         if (current_rpm < (target_rpm+20))
             speed = 127;
         else
@@ -285,7 +269,7 @@ void tank_drive()
 
     if(left || right)
     {
-        chas.spin_left(left);//i<3jer
+        chas.spin_left(left);
         chas.spin_right(right);
     }
     else
@@ -301,8 +285,7 @@ void print_info(int time)
 {
 
     if(time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 <= 100)
-        //con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
-        con.print(0, 0, "Hue: %.1lf         ", optical.get_hue()); 
+        con.print(0, 0, "Chassis Temp: %.1lf         ", chas.temp());
     if(time % 100 == 0 && time % 150 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 150 == 0)
@@ -356,9 +339,6 @@ Auton auton_selector(std::vector<Auton> autons)
     short int selected = 0;
     int timer = 0;
 
-    // bool left_first = true;
-    // bool right_first = true;
-
     while(true)
     {
         if(!glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_A))
@@ -368,25 +348,6 @@ Auton auton_selector(std::vector<Auton> autons)
             if(timer % 100 == 0) 
                 glb::con.print(1, 0, "Color: %s         ", isRed ? "Red      " : "Blue       ");
 
-            // if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
-            // {
-            //     if(left_first)
-            //     {
-            //         left_first = false;
-            //         if(selected > 0) selected--;
-            //     }
-            // }
-            // else left_first = true;
-
-            // if(glb::con.get_digital(pros::E_CONTROLLER_DIGITAL_RIGHT))
-            // {
-            //     if(right_first)
-            //     {
-            //         right_first = false;
-            //         if(selected < autons.size()-1) selected++;
-            //     }
-            // }
-            // else right_first = true;
             if(glb::con.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT) && selected > 0)
                 selected--;
 
