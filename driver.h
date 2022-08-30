@@ -106,6 +106,7 @@ void index(int time)
 {
     static int init_time;
     static int discs = 0;
+    bool discPresent = (distance.get() < 10) ? true : false;
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
     {
         init_time = time;
@@ -125,7 +126,7 @@ void index(int time)
             if (indexer.get_status() && time - init_time > 200)
             {
                 indexer.toggle();
-                discs--;
+                discs = discPresent ? discs - 1 : 0;
                 init_time = time;
             }
             if (!indexer.get_status() && time - init_time > 400)
@@ -298,9 +299,9 @@ void print_info_auton(int time, double error)
     if(time % 100 == 0) 
         con.print(0, 0, "Error: %.2f         ", error);
     if(time % 200 == 0 && time % 500 != 0 && time % 5000 != 0) 
-        con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
+        con.print(1, 0, "%.2f : %.2f          ", imu.get_heading(), chas.pos());
     if(time % 5000 == 0) 
-        con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
+        con.print(2, 0, "auton %s         ", (*auton).get_name());
 }
 
 void calibrate_robot()
@@ -330,7 +331,7 @@ void temp_freeze_robot (int timeout = 5000)
     }
     glb::con.clear();
     delay(100);
-    con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
+    con.print(2, 0, "auton: %s         ", (*auton).get_name());
 
 }
 
@@ -369,6 +370,7 @@ Auton auton_selector(std::vector<Auton> autons)
             pros::delay(50);
             glb::con.print(2, 0, "Color: %s         ", isRed ? "Red" : "Blue");
             pros::delay(1500);
+            glb::con.clear();
             return autons.at(selected);
         }
 
