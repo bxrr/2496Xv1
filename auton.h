@@ -14,12 +14,10 @@ using namespace pros;
 using namespace pid;
 using namespace glb;
 
-int  auton_auto_roller();
+int auton_auto_roller();
+int auton_index();
+int auton_index_one();
 
-void auto_test()
-{
-    auton_auto_roller();
-}
 void test()
 {
     drive(1500);
@@ -42,7 +40,6 @@ std::vector<Auton> autons
     Auton("test", test),
     Auton("right", right),
     Auton("left", left),
-    Auton("roller test", auto_test),
 };
 
 
@@ -115,5 +112,20 @@ int auton_auto_roller(int timeout = 2000)
     }
     return 0;
 }
+
+int auton_index()
+{
+    for (int i=3; i>0; i--)
+    {
+        indexer.set(true);
+        delay(200);
+        indexer.set(false);
+        delay(400);
+        if(distance.get() < 25)
+            return 0;
+    }
+    return 0;
+}
+
 
 #endif
