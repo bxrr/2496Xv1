@@ -16,7 +16,7 @@ namespace pid
     {
         #define DRIVE_KP 0.11778
         #define DRIVE_KI 0 //0.01
-        #define DRIVE_KD 0 //5
+        #define DRIVE_KD 1.1591 //5
         #define IMU_K 0
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
