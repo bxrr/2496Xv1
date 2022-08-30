@@ -15,8 +15,8 @@ namespace pid
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
         #define DRIVE_KP 0.11778
-        #define DRIVE_KI 0 //0.01
-        #define DRIVE_KD 1.1591 //5
+        #define DRIVE_KI 4.3 //0.01
+        #define DRIVE_KD 0.78 //5
         #define IMU_K 0
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {

@@ -53,7 +53,7 @@ void flywheelPID(int time)
 {
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 470;
+    static double target_rpm = 520;
     static bool fly_toggle = false;
 
     //update vars
@@ -106,7 +106,7 @@ void index(int time)
 {
     static int init_time;
     static int discs = 0;
-    bool discPresent = (distance.get() < 40) ? true : false;
+    bool discPresent = (distance.get() < 10) ? true : false;
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
     {
         init_time = time;
@@ -290,7 +290,7 @@ void print_info(int time)
     if(time % 100 == 0 && time % 150 != 0) 
         con.print(1, 0, "%.2f : %.2f", imu.get_heading(), chas.pos());
     if(time % 150 == 0)
-        con.print(2, 0, "Current Auton: %s         ", (*auton).get_name());
+        con.print(2, 0, "auton: %s         ", (*auton).get_name());
 
 }
 
