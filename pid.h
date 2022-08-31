@@ -4,6 +4,8 @@
 #include "main.h"
 #include "global.h"
 #include "driver.h"
+#include <cmath>
+
 using namespace glb;
 namespace pid
 {
@@ -101,9 +103,14 @@ namespace pid
         end_head = imu.get_heading();
     }
 
+    double turn_f(double error)
+    {
+        return error / fabs(error) * (25 * log(0.25 * (abs(error) + 4)) + 5)
+    }
+
     void turn(double target_deg, bool absturn=false, int timeout=2000, double max_speed=127, int exit_time=100)
     {  
-        #define TURN_KP 3
+        #define TURN_KP 1
         #define TURN_KI 0
         #define TURN_KD 0
 
@@ -155,7 +162,7 @@ namespace pid
             integral += error;
             derivative = error - prev_error;
 
-            double speed = error * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
+            double speed = turn_f(error) * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
 
             if (fabs(speed) > max_speed) 
             {
@@ -163,7 +170,7 @@ namespace pid
                 speed *= multiplier;
             }
 
-            if (fabs(error) < 0.2)
+            if (fabs(error) < 0.1)
             {
                 if(!exit)
                     exit = true;
