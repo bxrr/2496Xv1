@@ -146,12 +146,14 @@ int flywheel_index(int target_rpm, int timeout)
     {
         flywheelL.move(127);
         flywheelR.move(127);
+        current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
+        delay(1);
     }
 
     speed = target_rpm * 0.212;
     flywheelL.move(speed);
     flywheelR.move(speed);
-    delay(500);
+    delay(200);
 
     while (time<timeout)
     {
@@ -165,7 +167,7 @@ int flywheel_index(int target_rpm, int timeout)
         if (indexer.get_status() && time - init_time > 200)
             {
                 indexer.toggle();
-                if (distance.get() > 25)
+                if (distance.get() > 40)
                 {
                     flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
                     flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
@@ -188,18 +190,9 @@ int flywheel_index(int target_rpm, int timeout)
         time++;
     }
 
-    for (int i=3; i>0; i--)
-    {
-        indexer.set(true);
-        delay(200);
-        indexer.set(false);
-        delay(400);
-        if(distance.get() > 25)
-            return 0;
-    }
-
     flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 	flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+    delay(200);
     flywheelL.brake();
     flywheelR.brake();
 
