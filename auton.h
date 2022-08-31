@@ -31,20 +31,31 @@ void flywheel_test()
 }
 void test()
 {
-    turn(90);
+    turn(45);
     turn(-90);
+    turn(30);
+    turn(-180);
 }
 
 void right()
 {
     drive(500);
-    drive(-1000);
-    drive(2000);
+    drive(300);
+    drive(-1500);
+    // drive(-1000);
+    // drive(2000);
 }
 
 void left()
 {
-    drive(500);
+    flywheelL.move(127);
+    flywheelR.move(127);
+    auton_auto_roller(2000);
+    drive(-400);
+    turn(-9);
+    delay(300);
+    flywheel_index(600,8000);
+
 }
 
 std::vector<Auton> autons
@@ -120,6 +131,8 @@ int auton_auto_roller(int timeout = 2000)
             intakeL.move(100);
             intakeR.move(100);
             if(time - init_time >= 200)
+                intakeL.move(0);
+                intakeR.move(0);
                 return 0;
         }
         else
@@ -132,6 +145,8 @@ int auton_auto_roller(int timeout = 2000)
         delay(1);
         time++;
     }
+    intakeL.move(0);
+    intakeR.move(0);
     return 0;
 }
 
@@ -177,7 +192,7 @@ int flywheel_index(int target_rpm, int timeout)
                 }
                 init_time = time;
             }
-        if (!indexer.get_status() && time - init_time > 400)
+        if (!indexer.get_status() && time - init_time > 1600)
             {
                 indexer.toggle();
                 init_time = time;
