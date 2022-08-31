@@ -15,19 +15,19 @@ using namespace pid;
 using namespace glb;
 
 int auton_auto_roller(int timeout);
-int flywheel_index();
 int intake(int time);
 int flywheel_index_one();
+int flywheel_index(int target_rpm, int timeout);
 
 void roller_test()
 {
     auton_auto_roller(2000);
 }
-void index_test()
+void flywheel_test()
 {
-    flywheel_index_one();
-    delay(1000);
-    flywheel_index();
+    // flywheel_index_one();
+    // delay(1000);
+    flywheel_index(480, 5000);
 }
 void test()
 {
@@ -53,7 +53,7 @@ std::vector<Auton> autons
     Auton("right", right),
     Auton("left", left),
     Auton("roller test", roller_test),
-    Auton("index test", index_test),
+    Auton("flywheel test", flywheel_test),
 };
 
 int intake(int time)
@@ -135,8 +135,59 @@ int auton_auto_roller(int timeout = 2000)
     return 0;
 }
 
-int flywheel_index()
+int flywheel_index(int target_rpm, int timeout)
 {
+    double current_rpm;
+    double speed = 0;
+    int time = 0;
+    int init_time = 0;
+
+    while (current_rpm < (target_rpm + 20))
+    {
+        flywheelL.move(127);
+        flywheelR.move(127);
+    }
+
+    speed = target_rpm * 0.212;
+    flywheelL.move(speed);
+    flywheelR.move(speed);
+    delay(500);
+
+    while (time<timeout)
+    {
+        current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
+
+        if (current_rpm < (target_rpm+20))
+            speed = 127;
+        else
+            speed = target_rpm * 0.212;
+
+        if (indexer.get_status() && time - init_time > 200)
+            {
+                indexer.toggle();
+                if (distance.get() > 25)
+                {
+                    flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+                    flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+                    flywheelL.brake();
+                    flywheelR.brake();
+                    return 0;
+                }
+                init_time = time;
+            }
+        if (!indexer.get_status() && time - init_time > 400)
+            {
+                indexer.toggle();
+                init_time = time;
+            }
+
+        flywheelL.move(speed);
+        flywheelR.move(speed);
+        
+        delay(1);
+        time++;
+    }
+
     for (int i=3; i>0; i--)
     {
         indexer.set(true);
@@ -146,15 +197,21 @@ int flywheel_index()
         if(distance.get() > 25)
             return 0;
     }
+
+    flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+	flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+    flywheelL.brake();
+    flywheelR.brake();
+
     return 0;
 }
 
 int flywheel_index_one()
 {
-        indexer.set(true);
-        delay(200);
-        indexer.set(false);
-        return 0;
+    indexer.set(true);
+    delay(200);
+    indexer.set(false);
+    return 0;
 }
 
 

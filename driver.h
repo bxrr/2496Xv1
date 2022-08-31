@@ -53,7 +53,7 @@ void flywheelPID(int time)
 {
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 520;
+    static double target_rpm = 480;
     static bool fly_toggle = false;
 
     //update vars
