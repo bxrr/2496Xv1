@@ -14,13 +14,25 @@ using namespace pros;
 using namespace pid;
 using namespace glb;
 
-int auton_auto_roller();
-int auton_index();
-int auton_index_one();
+int auton_auto_roller(int timeout);
+int flywheel_index();
+int intake(int time);
+int flywheel_index_one();
 
+void roller_test()
+{
+    auton_auto_roller(2000);
+}
+void index_test()
+{
+    flywheel_index_one();
+    delay(1000);
+    flywheel_index();
+}
 void test()
 {
-    drive(1500);
+    turn(90);
+    turn(-90);
 }
 
 void right()
@@ -40,9 +52,19 @@ std::vector<Auton> autons
     Auton("test", test),
     Auton("right", right),
     Auton("left", left),
+    Auton("roller test", roller_test),
+    Auton("index test", index_test),
 };
 
-
+int intake(int time)
+{
+    intakeL.move(127);
+    intakeR.move(127);
+    delay(time);
+    intakeL.move(0);
+    intakeR.move(0);
+    return 0;
+}
 
 int auton_auto_roller(int timeout = 2000)
 {
@@ -113,7 +135,7 @@ int auton_auto_roller(int timeout = 2000)
     return 0;
 }
 
-int auton_index()
+int flywheel_index()
 {
     for (int i=3; i>0; i--)
     {
@@ -121,10 +143,18 @@ int auton_index()
         delay(200);
         indexer.set(false);
         delay(400);
-        if(distance.get() < 25)
+        if(distance.get() > 25)
             return 0;
     }
     return 0;
+}
+
+int flywheel_index_one()
+{
+        indexer.set(true);
+        delay(200);
+        indexer.set(false);
+        return 0;
 }
 
 

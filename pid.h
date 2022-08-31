@@ -17,8 +17,8 @@ namespace pid
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
         #define DRIVE_KP 0.11778
-        #define DRIVE_KI 4.3 //0.01
-        #define DRIVE_KD 0.78 //5
+        #define DRIVE_KI 0.02 //0.01
+        #define DRIVE_KD 9 //5
         #define IMU_K 0
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
@@ -53,7 +53,7 @@ namespace pid
             //I
             integral += error * start_positive ? (error < 0) : (error > 0);
             //D
-            derivative = error - prev_error;
+            derivative = (error - prev_error) * 1000;
 
             //Correct sides, ensure heading stays same as beginning
             heading_error = init_heading - imu.get_heading();
@@ -88,7 +88,10 @@ namespace pid
             chas.spin_right(speed + correction);
 
             //Logging
-            print_info_auton(time, error);
+            if(time % 50 == 0)
+            {
+                glb::con.print(0, 0, "Error: %f", error);
+            }
             
             //Prevent infinite loops
             pros::delay(1);
@@ -105,12 +108,12 @@ namespace pid
 
     double turn_f(double error)
     {
-        return error / fabs(error) * (25 * log(0.25 * (abs(error) + 4)) + 5)
+        return error / fabs(error) * (25 * log(0.25 * (abs(error) + 4)) + 5);
     }
 
-    void turn(double target_deg, bool absturn=false, int timeout=2000, double max_speed=127, int exit_time=100)
+    void turn(double target_deg, bool absturn=false, int timeout=7000, double max_speed=127, int exit_time=100)
     {  
-        #define TURN_KP 1
+        #define TURN_KP 0.9
         #define TURN_KI 0
         #define TURN_KD 0
 
@@ -159,8 +162,8 @@ namespace pid
         while (time<timeout){
             prev_error = error;
             error = target - imu.get_heading();
-            integral += error;
-            derivative = error - prev_error;
+            integral += error / 1000;
+            derivative = (error - prev_error) * 1000;
 
             double speed = turn_f(error) * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
 
@@ -182,6 +185,8 @@ namespace pid
 
             chas.spin_left(speed);
             chas.spin_right(-speed);
+
+            print_info_auton(time, error);
 
             pros::delay(1);
             time++;
