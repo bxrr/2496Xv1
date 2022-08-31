@@ -17,8 +17,8 @@ namespace pid
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
         #define DRIVE_KP 0.11778
-        #define DRIVE_KI 0.02 //0.01
-        #define DRIVE_KD 9 //5
+        #define DRIVE_KI 0.001 //0.01
+        #define DRIVE_KD 0 //5
         #define IMU_K 0
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
@@ -51,7 +51,9 @@ namespace pid
             //P
             error = target - chas.pos();
             //I
-            integral += error * start_positive ? (error < 0) : (error > 0);
+            if(fabs(error)<20) {
+                integral += error;
+            }
             //D
             derivative = (error - prev_error) * 1000;
 
@@ -73,7 +75,7 @@ namespace pid
             }
 
             //Exit Loop
-            if (fabs(error) < 1.5)
+            if (fabs(error) < 2)
             {
                 if(!exit)
                     exit = true;
@@ -90,7 +92,7 @@ namespace pid
             //Logging
             if(time % 50 == 0)
             {
-                glb::con.print(0, 0, "Error: %f", error);
+                glb::con.print(0, 0, "Error: %.2f", error);
             }
             
             //Prevent infinite loops
@@ -108,7 +110,7 @@ namespace pid
 
     double turn_f(double error)
     {
-        return error / fabs(error) * (25 * log(0.25 * (abs(error) + 4)) + 5);
+        return error / fabs(error) * (25 * log(0.25 * (fabs(error) + 4)) + 5);
     }
 
     void turn(double target_deg, bool absturn=false, int timeout=7000, double max_speed=127, int exit_time=100)
