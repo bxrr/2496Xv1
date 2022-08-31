@@ -17,9 +17,9 @@ namespace pid
     void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
     {
         #define DRIVE_KP 0.11778
-        #define DRIVE_KI 0.001 //0.01
+        #define DRIVE_KI 0.0004 //0.01
         #define DRIVE_KD 0 //5
-        #define IMU_K 0
+        #define IMU_K 0.001
 
         if (fabs(end_head) - fabs(imu.get_heading()) > 1) {
             start_head += end_head-imu.get_heading();
@@ -34,6 +34,7 @@ namespace pid
         double error = target - chas.pos();
         double prev_error;
         double integral = 0;
+        double kintegral = 0;
         double derivative = 0;
         double init_heading = imu.get_heading();
         double heading_error = 0;
@@ -51,7 +52,7 @@ namespace pid
             //P
             error = target - chas.pos();
             //I
-            if(fabs(error)<20) {
+            if(fabs(error)<60) {
                 integral += error;
             }
             //D
@@ -64,7 +65,9 @@ namespace pid
             double speed = error * DRIVE_KP + integral * DRIVE_KI + derivative * DRIVE_KD;
 
             //Heading correction
-            double correction = heading_error * IMU_K;
+            kintegral += heading_error;
+
+            double correction = kintegral * IMU_K;
 
             //Cap speed and correction sum to max
             if (fabs(speed) + fabs(correction) > max_speed) 
@@ -86,8 +89,8 @@ namespace pid
             }
 
             //Keep sides moving the same distances
-            chas.spin_left(speed - correction);
-            chas.spin_right(speed + correction);
+            chas.spin_left(speed - correction * speed / 127.0);
+            chas.spin_right(speed + correction * speed / 127.0);
 
             //Logging
             if(time % 50 == 0)
@@ -116,7 +119,7 @@ namespace pid
     void turn(double target_deg, bool absturn=false, int timeout=7000, double max_speed=127, int exit_time=100)
     {  
         #define TURN_KP 0.9
-        #define TURN_KI 0
+        #define TURN_KI 10
         #define TURN_KD 0
 
         int starting;
@@ -161,10 +164,12 @@ namespace pid
         bool exit = false;
 
         int time = 0;
-        while (time<timeout){
+        while (time<timeout)
+        {
             prev_error = error;
             error = target - imu.get_heading();
-            integral += error / 1000;
+            if(fabs(error) < 1.5)
+                integral += error / 1000;
             derivative = (error - prev_error) * 1000;
 
             double speed = turn_f(error) * TURN_KP + integral * TURN_KI + derivative * TURN_KD;
@@ -175,7 +180,7 @@ namespace pid
                 speed *= multiplier;
             }
 
-            if (fabs(error) < 0.1)
+            if (fabs(error) < 0.15)
             {
                 if(!exit)
                     exit = true;
