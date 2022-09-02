@@ -14,7 +14,7 @@ namespace pid
     //For Brandon: improve
     double end_head = 0;
 
-    void drive(double target_dist, int timeout=5000, double max_speed=127, int exit_time=100)
+    void drive(double target_dist, int timeout=5000, double mult=1.0, double max_speed=127, int exit_time=50)
     {
         #define DRIVE_KP 0.11778
         #define DRIVE_KI 0.0004 //0.01
@@ -62,7 +62,7 @@ namespace pid
             heading_error = init_heading - imu.get_heading();
 
             //PID
-            double speed = error * DRIVE_KP + integral * DRIVE_KI + derivative * DRIVE_KD;
+            double speed = mult * (error * DRIVE_KP + integral * DRIVE_KI + derivative * DRIVE_KD);
 
             //Heading correction
             kintegral += heading_error;
@@ -116,7 +116,7 @@ namespace pid
         return error / fabs(error) * (25 * log(0.25 * (fabs(error) + 4)) + 5);
     }
 
-    void turn(double target_deg, bool absturn=false, int timeout=7000, double max_speed=127, int exit_time=100)
+    void turn(double target_deg, bool absturn=false, int timeout=7000, double multi=1.0, double max_speed=127, int exit_time=100)
     {  
         #define TURN_KP 0.9
         #define TURN_KI 10
@@ -190,8 +190,8 @@ namespace pid
                     break;
             }
 
-            chas.spin_left(speed);
-            chas.spin_right(-speed);
+            chas.spin_left(speed * multi);
+            chas.spin_right(-speed * multi);
 
             print_info_auton(time, error);
 

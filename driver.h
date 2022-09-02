@@ -106,7 +106,7 @@ void index(int time)
 {
     static int init_time;
     static int discs = 0;
-    bool discPresent = (distance.get() < 10) ? true : false;
+    bool discPresent = (distance.get() < 40) ? true : false;
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
     {
         init_time = time;

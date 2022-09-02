@@ -18,16 +18,35 @@ int auton_auto_roller(int timeout);
 void flywheel_start(int target_rpm);
 void flywheel_stop();
 void intake_start();
+void intake_reverse();
 void intake_stop();
 int flywheel_index_one();
-int flywheel_index(int target_rpm, int timeout);
+int flywheel_index(int target_rpm, int index_speed, int timeout);
 
 void test()
 {
-    turn(45);
-    turn(-90);
-    turn(30);
-    turn(-180);
+    auton_auto_roller(3000);
+    flywheel_start(600);
+    drive(-200, 1000, 5.0);
+    turn(-3, true, 1250, 1.5);
+    flywheel_index(600, 1500, 5000);
+    delay(500);
+    flywheel_stop();
+    turn(-132, true, 2000);
+    intake_start();
+    drive(3000, 2000, 1.0, 80);
+    flywheel_start(575);
+    intake_reverse();
+    turn(89, false, 1500);
+    intake_stop();
+    flywheel_index(575, 1100, 5000);
+    delay(500);
+    flywheel_stop();
+
+    // turn(45);
+    // turn(-90);
+    // turn(30);
+    // turn(-180);
 }
 
 void right()
@@ -46,7 +65,7 @@ void left()
     drive(-400);
     turn(-9);
     delay(300);
-    flywheel_index(600,8000);
+    flywheel_index(600, 400, 8000);
 
 }
 
@@ -57,7 +76,12 @@ std::vector<Auton> autons
     Auton("left", left),
 };
 
-void intake_start(int time)
+void intake_start()
+{
+    intakeL.move(127);
+    intakeR.move(127);
+}
+void intake_reverse()
 {
     intakeL.move(127);
     intakeR.move(127);
@@ -129,17 +153,12 @@ int auton_auto_roller(int timeout = 2000)
                 intakeL.brake();
                 intakeR.brake();
                 chas.stop();
+                optical.set_led_pwm(0);
                 delay(200);
                 intakeL.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	            intakeR.set_brake_mode(E_MOTOR_BRAKE_COAST); 
                 return 0;
             }
-        }
-        else
-        {
-            intakeL.move(0);
-            intakeR.move(0);
-            optical.set_led_pwm(0);
         }
 
         delay(1);
@@ -151,6 +170,7 @@ int auton_auto_roller(int timeout = 2000)
     intakeR.brake();
     chas.stop();
     delay(200);
+    optical.set_led_pwm(0);
     intakeL.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	intakeR.set_brake_mode(E_MOTOR_BRAKE_COAST); 
     return 0;
@@ -171,7 +191,7 @@ void flywheel_stop()
     flywheelL.brake();
     flywheelR.brake();
 }
-int flywheel_index(int target_rpm, int timeout)
+int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
 {
     double current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
     double speed = 0;
@@ -205,15 +225,11 @@ int flywheel_index(int target_rpm, int timeout)
                 indexer.toggle();
                 if (distance.get() > 40)
                 {
-                    flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
-                    flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
-                    flywheelL.brake();
-                    flywheelR.brake();
                     return 0;
                 }
                 init_time = time;
             }
-        if (!indexer.get_status() && time - init_time > 400)
+        if (!indexer.get_status() && time - init_time > index_speed)
             {
                 indexer.toggle();
                 init_time = time;
