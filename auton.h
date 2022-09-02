@@ -26,20 +26,22 @@ int flywheel_index(int target_rpm, int index_speed, int timeout);
 void test()
 {
     auton_auto_roller(3000);
-    flywheel_start(600);
-    drive(-200, 1000, 5.0);
-    turn(-3, true, 1250, 1.5);
-    flywheel_index(600, 1500, 5000);
+    flywheel_start(590);
+    drive(-225, 1000, 5.0);
+    turn(-5, true, 1250, 1.5);
+    flywheel_index(590, 2000, 5000);
     delay(500);
     flywheel_stop();
-    turn(-132, true, 2000);
+    turn(-130, true, 2000);
     intake_start();
     drive(3000, 2000, 1.0, 80);
-    flywheel_start(575);
+    delay(750);
+    flywheel_start(550);
     intake_reverse();
-    turn(89, false, 1500);
+    turn(94, false, 1500);
     intake_stop();
-    flywheel_index(575, 1100, 5000);
+    drive(-350, 1500, 2.0);
+    flywheel_index(550, 1300, 5000);
     delay(500);
     flywheel_stop();
 
@@ -51,11 +53,29 @@ void test()
 
 void right()
 {
-    drive(500);
-    drive(300);
-    drive(-1500);
-    // drive(-1000);
-    // drive(2000);
+    intake_start();
+    drive(1500, 2000, 1.0, 80);
+    intake_stop();
+    flywheel_start(550);
+    turn(30, true, 1500);
+    flywheel_index(550, 1300, 5000);
+    delay(300);
+
+    drive(-700);
+    turn(90, true, 1500);
+    intake_start();
+    drive(1200, 1500, 1.0, 60);
+    intake_stop();
+    flywheel_start(540);
+    turn(15, true, 1600);
+    flywheel_index(540, 1300, 5000);
+    delay(300);
+
+    turn(-15, true, 1300, 1.1);
+    drive(-1000, 1800);
+    turn(0, true, 1000, 1.2);
+    drive(-800, 1400);
+    auton_auto_roller(3000);
 }
 
 void left()
@@ -83,8 +103,8 @@ void intake_start()
 }
 void intake_reverse()
 {
-    intakeL.move(127);
-    intakeR.move(127);
+    intakeL.move(-127);
+    intakeR.move(-127);
 }
 void intake_stop()
 {
@@ -185,12 +205,13 @@ void flywheel_start(int target_rpm)
 
 void flywheel_stop()
 {
-    flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
-	flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+	flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+    flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 
     flywheelL.brake();
     flywheelR.brake();
 }
+
 int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
 {
     double current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
@@ -220,7 +241,7 @@ int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
         else
             speed = target_rpm * 0.212;
 
-        if (indexer.get_status() && time - init_time > 200)
+        if (indexer.get_status() && time - init_time > 350)
             {
                 indexer.toggle();
                 if (distance.get() > 40)
