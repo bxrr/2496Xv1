@@ -22,35 +22,52 @@ void intake_reverse();
 void intake_stop();
 int flywheel_index_one();
 int flywheel_index(int target_rpm, int index_speed, int timeout);
+void flywheel_start_over(int target_rpm);
+int flywheel_index_over(int target_rpm, int index_speed, int timeout);
 
 void test()
 {
-    auton_auto_roller(3000);
-    flywheel_start(590);
-    drive(-225, 1000, 5.0);
-    turn(-5, true, 1250, 1.5);
-    flywheel_index(590, 2000, 5000);
-    delay(500);
-    flywheel_stop();
-    turn(-130, true, 2000);
+    auton_auto_roller(2000);
+    drive(-325, 1000, 3.0);
+    turn(-135, true, 1100);
     intake_start();
-    drive(3000, 2000, 1.0, 80);
-    delay(750);
-    flywheel_start(550);
-    intake_reverse();
-    turn(94, false, 1500);
+    drive(2550, 2250);
+    turn(90, false, 1150);
     intake_stop();
-    drive(-350, 1500, 2.0);
-    flywheel_index(550, 1300, 5000);
-    delay(500);
+    flywheel_start_over(545);
+    drive(-500, 1000, 2.0);
+    flywheel_index_over(540, 600, 4000);
+    turn(-90, false, 1150);
     flywheel_stop();
+    // intake_start();
+    // drive(3050, 2600);
 
-    // turn(45);
-    // turn(-90);
-    // turn(30);
-    // turn(-180);
 }
 
+void half_awp()
+{
+    auton_auto_roller(2000);
+    flywheel_start_over(575);
+    drive(-325, 1000, 3.0);
+    turn(-8.7, true, 900, 1.3);
+    drive(-300, 1000, 3.0);
+    flywheel_index_over(575, 1300, 4000);
+    delay(200);
+    flywheel_stop();
+    turn(-127, true, 1100);
+    intake_start();
+    chas.spin_dist(800);
+    drive(1570, 2000, 1.0, 60);
+    delay(500);
+    flywheel_start_over(545);
+    intake_reverse();
+    turn(88, false, 1300);
+    intake_stop();
+    drive(-550, 1000, 2.0);
+    flywheel_index_over(535, 650, 3000);
+    delay(200);
+    flywheel_stop();
+}
 void right()
 {
     intake_start();
@@ -92,6 +109,7 @@ void left()
 std::vector<Auton> autons
 {
     Auton("test", test),
+    Auton("half awp", half_awp),
     Auton("right", right),
     Auton("left", left),
 };
@@ -198,6 +216,12 @@ int auton_auto_roller(int timeout = 2000)
 
 void flywheel_start(int target_rpm)
 {
+    flywheelL.move_velocity(target_rpm);
+    flywheelR.move_velocity(target_rpm);
+}
+
+void flywheel_start_over(int target_rpm)
+{
     double speed = target_rpm * 0.212;
     flywheelL.move(speed);
     flywheelR.move(speed);
@@ -213,6 +237,43 @@ void flywheel_stop()
 }
 
 int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
+{
+    int time = 0;
+    int init_time = 0;
+
+    flywheelL.move_velocity(target_rpm);
+    flywheelR.move_velocity(target_rpm);
+
+    delay(1000);
+
+    while (time<timeout)
+    {
+
+        if (indexer.get_status() && time - init_time > 350)
+            {
+                indexer.toggle();
+                if (distance.get() > 40)
+                {
+                    return 0;
+                }
+                init_time = time;
+            }
+        if (!indexer.get_status() && time - init_time > index_speed)
+            {
+                indexer.toggle();
+                init_time = time;
+            }
+
+        flywheelL.move_velocity(target_rpm);
+        flywheelR.move_velocity(target_rpm);
+        
+        delay(1);
+        time++;
+    }
+    return 0;
+}
+
+int flywheel_index_over(int target_rpm, int index_speed=400, int timeout = 5000)
 {
     double current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
     double speed = 0;
@@ -231,6 +292,7 @@ int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
     flywheelL.move(speed);
     flywheelR.move(speed);
     delay(200);
+    indexer.toggle();
 
     while (time<timeout)
     {
@@ -244,7 +306,7 @@ int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
         if (indexer.get_status() && time - init_time > 350)
             {
                 indexer.toggle();
-                if (distance.get() > 40)
+                if (distance.get() > 50)
                 {
                     return 0;
                 }
@@ -258,7 +320,7 @@ int flywheel_index(int target_rpm, int index_speed=400, int timeout = 5000)
 
         flywheelL.move(speed);
         flywheelR.move(speed);
-        
+
         delay(1);
         time++;
     }
