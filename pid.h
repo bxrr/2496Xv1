@@ -89,8 +89,8 @@ namespace pid
             }
 
             //Keep sides moving the same distances
-            chas.spin_left(speed - correction * speed / 127.0);
-            chas.spin_right(speed + correction * speed / 127.0);
+            chas.spin_left(speed + correction * speed / 127.0);
+            chas.spin_right(speed - correction * speed / 127.0);
 
             //Logging
             if(time % 50 == 0)

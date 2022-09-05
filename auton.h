@@ -15,6 +15,8 @@ using namespace pid;
 using namespace glb;
 
 int auton_auto_roller(int timeout);
+void spin_off(int left, int right, int time);
+void roller_no_sensor(int time);
 void flywheel_start(int target_rpm);
 void flywheel_stop();
 void intake_start();
@@ -27,46 +29,54 @@ int flywheel_index_over(int target_rpm, int index_speed, int timeout);
 
 void test()
 {
-    auton_auto_roller(2000);
-    drive(-325, 1000, 3.0);
-    turn(-135, true, 1100);
+    // auton_auto_roller(2000);
+    roller_no_sensor(180);
+    drive(-325, 800, 3.0);
+    turn(-136, true, 1000);
     intake_start();
-    drive(2550, 2250);
-    turn(90, false, 1150);
+    chas.spin_dist(600, 90);
+    drive(1675, 2100, 1.0, 60);
+    turn(101.5, false, 1150);
     intake_stop();
-    flywheel_start_over(545);
-    drive(-500, 1000, 2.0);
-    flywheel_index_over(540, 600, 4000);
-    turn(-90, false, 1150);
+    flywheel_start_over(563);
+    drive(-320, 800, 2.0);
+    flywheel_index_over(553, 555, 4000);
     flywheel_stop();
-    // intake_start();
-    // drive(3050, 2600);
+    delay(200);
+    turn(-105.9, false, 1000);
+    intake_start();
+    drive(3950, 2500, 1.0, 110);
+    intake_stop();
+    spin_off(80, 10, 500);
+    roller_no_sensor(240);
+    drive(-100, 800, 3.0);
 
 }
 
 void half_awp()
 {
-    auton_auto_roller(2000);
-    flywheel_start_over(575);
+    roller_no_sensor(150);
+    flywheel_start_over(580);
     drive(-325, 1000, 3.0);
     turn(-8.7, true, 900, 1.3);
     drive(-300, 1000, 3.0);
-    flywheel_index_over(575, 1300, 4000);
+    flywheel_index_over(578, 1300, 4000);
     delay(200);
     flywheel_stop();
     turn(-127, true, 1100);
     intake_start();
     chas.spin_dist(800);
-    drive(1570, 2000, 1.0, 60);
+    drive(1620, 2000, 1.0, 60);
     delay(500);
-    flywheel_start_over(545);
+    flywheel_start_over(58);
     intake_reverse();
     turn(88, false, 1300);
     intake_stop();
     drive(-550, 1000, 2.0);
-    flywheel_index_over(535, 650, 3000);
+    flywheel_index_over(538, 650, 3000);
     delay(200);
     flywheel_stop();
+
 }
 void right()
 {
@@ -114,6 +124,14 @@ std::vector<Auton> autons
     Auton("left", left),
 };
 
+void spin_off(int left, int right, int time)
+{
+    chas.spin_left(left);
+    chas.spin_right(right);
+    delay(time);
+    chas.stop();
+}
+
 void intake_start()
 {
     intakeL.move(127);
@@ -130,6 +148,21 @@ void intake_stop()
     intakeR.move(0);
 }
 
+void roller_no_sensor(int time)
+{
+    chas.spin(50);
+    delay(100);
+    intake_reverse();
+    delay(time);
+    intakeL.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	intakeR.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    intakeL.brake();
+    intakeR.brake();
+    chas.stop();
+    delay(200);
+    intakeL.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	intakeR.set_brake_mode(E_MOTOR_BRAKE_COAST); 
+}
 int auton_auto_roller(int timeout = 2000)
 {
     int time = 0;
