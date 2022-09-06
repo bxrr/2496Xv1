@@ -13,6 +13,7 @@ namespace pid
     //For Yousef: finish abs turn
     //For Brandon: improve
     double end_head = 0;
+    double global_heading = 0;
 
     void drive(double target_dist, int timeout=5000, double mult=1.0, double max_speed=127, int exit_time=50)
     {
@@ -109,6 +110,8 @@ namespace pid
         }
         
         end_head = imu.get_heading();
+
+        global_heading += imu.get_heading() - starting;
     }
 
     double turn_f(double error)
@@ -116,8 +119,9 @@ namespace pid
         return error / fabs(error) * (25 * log(0.25 * (fabs(error) + 4)) + 5);
     }
 
-    void turn(double target_deg, bool absturn=false, int timeout=7000, double multi=1.0, double max_speed=127, int exit_time=100)
+    void turn(double target_deg, int timeout=3000, double multi=1.0, double max_speed=127, int exit_time=100)
     {  
+        bool absturn = false; // THIS IS TEMPORARY lol cus I made it a separate func. remove it later maybe
         #define TURN_KP 0.9
         #define TURN_KI 10
         #define TURN_KD 0
@@ -211,8 +215,16 @@ namespace pid
         }
         
         end_head = imu.get_heading();
+
+        global_heading += imu.get_heading() - starting;
     }
 
+    void turn_to(double degree_to, int timeout=3000, double multi=1.0, double max_speed=127, int exit_time=100)
+    {
+        double degree = degree_to - global_heading;
+        degree = (degree > 180) ? -(360 - degree) : ((degree < -180) ? (360 + degree) : (degree)); // optimize the turn direction
+        turn(degree, timeout, multi, max_speed, exit_time);
+    }
 }
 
 #endif

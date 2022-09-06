@@ -32,18 +32,18 @@ void test()
     // auton_auto_roller(2000);
     roller_no_sensor(180);
     drive(-325, 800, 3.0);
-    turn(-136, true, 1000);
+    turn_to(-136, 1000);
     intake_start();
     chas.spin_dist(600, 90);
     drive(1675, 2100, 1.0, 60);
-    turn(101.5, false, 1150);
+    turn_to(-34.5, 1150);
     intake_stop();
     flywheel_start_over(563);
     drive(-320, 800, 2.0);
     flywheel_index_over(553, 555, 4000);
     flywheel_stop();
     delay(200);
-    turn(-105.9, false, 1000);
+    turn_to(-140.4, 1000);
     intake_start();
     drive(3950, 2500, 1.0, 110);
     intake_stop();
@@ -58,19 +58,19 @@ void half_awp()
     roller_no_sensor(150);
     flywheel_start_over(580);
     drive(-325, 1000, 3.0);
-    turn(-8.7, true, 900, 1.3);
+    turn_to(-8.7, 900, 1.3);
     drive(-300, 1000, 3.0);
     flywheel_index_over(578, 1300, 4000);
     delay(200);
     flywheel_stop();
-    turn(-127, true, 1100);
+    turn_to(-127, 1100);
     intake_start();
     chas.spin_dist(800);
     drive(1620, 2000, 1.0, 60);
     delay(500);
     flywheel_start_over(58);
     intake_reverse();
-    turn(88, false, 1300);
+    turn_to(-39, 1300);
     intake_stop();
     drive(-550, 1000, 2.0);
     flywheel_index_over(538, 650, 3000);
@@ -84,23 +84,23 @@ void right()
     drive(1500, 2000, 1.0, 80);
     intake_stop();
     flywheel_start(550);
-    turn(30, true, 1500);
+    turn_to(30, 1500);
     flywheel_index(550, 1300, 5000);
     delay(300);
 
     drive(-700);
-    turn(90, true, 1500);
+    turn_to(90, 1500);
     intake_start();
     drive(1200, 1500, 1.0, 60);
     intake_stop();
     flywheel_start(540);
-    turn(15, true, 1600);
+    turn_to(15, 1600);
     flywheel_index(540, 1300, 5000);
     delay(300);
 
-    turn(-15, true, 1300, 1.1);
+    turn_to(-15, 1300, 1.1);
     drive(-1000, 1800);
-    turn(0, true, 1000, 1.2);
+    turn_to(0, 1000, 1.2);
     drive(-800, 1400);
     auton_auto_roller(3000);
 }
@@ -110,7 +110,7 @@ void left()
     flywheel_start(600);
     auton_auto_roller(2000);
     drive(-400);
-    turn(-9);
+    turn_to(-9);
     delay(300);
     flywheel_index(600, 400, 8000);
 
