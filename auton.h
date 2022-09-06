@@ -29,6 +29,12 @@ int flywheel_index_over(int target_rpm, int index_speed, int timeout);
 
 void test()
 {
+    
+
+}
+
+void solo_awp()
+{
     // auton_auto_roller(2000);
     roller_no_sensor(180);
     drive(-325, 800, 3.0);
@@ -50,30 +56,35 @@ void test()
     spin_off(80, 10, 500);
     roller_no_sensor(240);
     drive(-100, 800, 3.0);
-
 }
-
 void half_awp()
 {
+    //Get home roller
     roller_no_sensor(150);
-    flywheel_start_over(580);
+
+    //Launch preloaded discs
+    flywheel_start_over(585);
     drive(-325, 1000, 3.0);
     turn_to(-8.7, 900, 1.3);
-    drive(-300, 1000, 3.0);
-    flywheel_index_over(578, 1300, 4000);
+    drive(-270, 1000, 3.0);
+    flywheel_index_over(592, 1500, 4000);
     delay(200);
     flywheel_stop();
-    turn_to(-127, 1100);
+
+    //Move to get more discs
+    turn_to(-123, 1100);
     intake_start();
     chas.spin_dist(800);
-    drive(1620, 2000, 1.0, 60);
+    drive(1700, 2000, 1.0, 60);
     delay(500);
-    flywheel_start_over(58);
+
+    //Shoot new discs
+    flywheel_start_over(550);
     intake_reverse();
-    turn_to(-39, 1300);
+    turn_to(-41, 1300);
     intake_stop();
-    drive(-550, 1000, 2.0);
-    flywheel_index_over(538, 650, 3000);
+    drive(-600, 1000, 2.0);
+    flywheel_index_over(542, 650, 3000);
     delay(200);
     flywheel_stop();
 
@@ -119,6 +130,7 @@ void left()
 std::vector<Auton> autons
 {
     Auton("test", test),
+    Auton("solo awp", solo_awp),
     Auton("half awp", half_awp),
     Auton("right", right),
     Auton("left", left),
