@@ -22,18 +22,8 @@ public:
 
     void set(bool extend)
     {
-        if(invert) 
-        {
-            piston.set_value(!extend);
-            status = !extend;
-        }
-        
-        else 
-        {
             piston.set_value(extend);
             status = extend;
-        }
-
         
     } 
     
