@@ -42,20 +42,20 @@ void solo_awp()
     intake_start();
     chas.spin_dist(600, 90);
     drive(1675, 2100, 1.0, 60);
-    turn_to(-34.5, 1150);
+    turn_to(-39, 1150);
     intake_stop();
-    flywheel_start_over(563);
+    flywheel_start_over(560);
     drive(-320, 800, 2.0);
-    flywheel_index_over(553, 555, 4000);
+    flywheel_index_over(550, 600, 4000);
     flywheel_stop();
     delay(200);
-    turn_to(-140.4, 1000);
+    turn_to(-145, 1000);
     intake_start();
-    drive(3950, 2500, 1.0, 110);
+    drive(4100, 2500, 1.0, 110);
     intake_stop();
-    spin_off(80, 10, 500);
+    spin_off(120, 10, 800);
     roller_no_sensor(240);
-    drive(-100, 800, 3.0);
+    drive(-220, 800, 3.0);
 }
 void half_awp()
 {
