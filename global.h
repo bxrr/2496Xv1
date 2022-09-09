@@ -32,7 +32,7 @@ namespace glb
     pros::Distance distance(P_DISTANCE);
     
     Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_18, false);
-    Piston indexer(P_INDEXER, true);
+    Piston indexer(P_INDEXER, false);
     Auton *auton;
 }
 
