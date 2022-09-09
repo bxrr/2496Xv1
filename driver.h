@@ -30,6 +30,30 @@ void arcade_drive()
     }
 }
 
+// equation: exp(( 7*log(2)*(x)) / 127) - 1
+void arcade_drive_cool()
+{
+    double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
+    double right = abs(con.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_RIGHT_X) : 0;
+
+    if(left || right)
+    {
+        if (left + right < 0)
+            chas.spin_right( -(exp(( 7*log(2)* -(left + right)) / 127) - 1) );
+        else
+            chas.spin_right( exp(( 7*log(2)* (left + right)) / 127) - 1 );
+        
+        if (left - right < 0)
+            chas.spin_right( -(exp(( 7*log(2)* -(left - right)) / 127) - 1) );
+        else
+            chas.spin_right( exp(( 7*log(2)* (left - right)) / 127) - 1 );
+    }
+    else
+    {
+        chas.stop();
+    }
+}
+
 void flywheel_toggle(int time)
 {
     static bool fly_toggle = false;
