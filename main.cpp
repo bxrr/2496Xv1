@@ -30,11 +30,12 @@ void opcontrol()
 	flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
 	intakeL.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	intakeR.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	endgameL.set(false);
+    endgameR.set(false);
 	
 
 	while(true)
 	{
-		
 		arcade_drive();
 		flywheelPID(time);
 		//intake_hold();

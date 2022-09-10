@@ -75,7 +75,23 @@ void flywheel_toggle(int time)
 
 void endgame_deploy(int time)
 {
-    
+    static bool pressedBefore = false;
+    static int init_time = 0;
+    if(init_time <= time - 500)
+    {
+        pressedBefore = false;
+    }
+    if (pressedBefore && con.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+    {
+        endgameL.set(true);
+        endgameR.set(true);
+    }
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_A))
+    {
+        pressedBefore = true;
+        init_time = time;
+    }
+
 }
 void flywheelPID(int time)
 {
