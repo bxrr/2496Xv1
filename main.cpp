@@ -40,6 +40,7 @@ void opcontrol()
 		//intake_hold();
 		auto_roller(time);
 		index(time);
+		endgame_deploy(time);
 		print_info(time);
 
 		if(con.get_digital(E_CONTROLLER_DIGITAL_DOWN))

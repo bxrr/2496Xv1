@@ -73,6 +73,10 @@ void flywheel_toggle(int time)
         con.print(0, 0, "%.2f", (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2);
 }
 
+void endgame_deploy(int time)
+{
+    
+}
 void flywheelPID(int time)
 {
     static double current_rpm;

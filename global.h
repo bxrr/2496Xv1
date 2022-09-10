@@ -20,6 +20,8 @@ namespace glb
     #define P_INTAKE_R 19
     #define P_OPTICAL 8
     #define P_DISTANCE 2
+    #define P_ENDGAME_L 'A'
+    #define P_ENDGAME_R 'B'
     #define P_INDEXER 'H'
     // objects =============================
     pros::Controller con(pros::E_CONTROLLER_MASTER);
@@ -33,6 +35,8 @@ namespace glb
     
     Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_18, false);
     Piston indexer(P_INDEXER, false);
+    Piston endgameL(P_ENDGAME_L, false);
+    Piston endgameR(P_ENDGAME_R, false);
     Auton *auton;
 }
 
