@@ -93,11 +93,19 @@ void endgame_deploy(int time)
     }
 
 }
+
+int speedArray[3] = {
+    470,
+    510,
+    580
+};
+
 void flywheelPID(int time)
 {
     static double current_rpm;
     static double speed = 0;
-    static double target_rpm = 480;
+    static int flyindex = 0;
+    static double target_rpm = speedArray[0];
     static bool fly_toggle = false;
 
     //update vars
@@ -106,20 +114,35 @@ void flywheelPID(int time)
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
         fly_toggle = fly_toggle ? false : true;
 
-    if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
-    {
-        // target_rpm = 480;
-        target_rpm += 10;
-        if (target_rpm > 600)
-            target_rpm = 600;
+
+    //Iterator- Deprecated in favor of array selector
+    // if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
+    // {
+    //     // target_rpm = 480;
+    //     target_rpm += 10;
+    //     if (target_rpm > 600)
+    //         target_rpm = 600;
+    // }
+    // else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
+    // {
+    //     // target_rpm = 400;
+    //     target_rpm -= 10;
+    //     if (target_rpm < 100)
+    //         target_rpm = 100;
+    // }
+
+    if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+        if(flyindex<(sizeof(speedArray)/4 - 1)) {
+            flyindex++;
+        }
     }
-    else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B))
-    {
-        // target_rpm = 400;
-        target_rpm -= 10;
-        if (target_rpm < 100)
-            target_rpm = 100;
+
+    else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+        if(flyindex>0) {
+            flyindex--;
+        }
     }
+    target_rpm = speedArray[flyindex];
 
     //adjusting voltage to match target
     if (fly_toggle)
