@@ -275,8 +275,8 @@ void flywheel_start_over(int target_rpm)
 
 void flywheel_stop()
 {
-	flywheelL.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
-    flywheelR.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+	flywheelL.set_brake_mode(E_MOTOR_BRAKE_COAST);
+    flywheelR.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
     flywheelL.brake();
     flywheelR.brake();

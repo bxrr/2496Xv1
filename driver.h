@@ -142,6 +142,7 @@ void flywheelPID(int time)
             flyindex--;
         }
     }
+
     target_rpm = speedArray[flyindex];
 
     //adjusting voltage to match target
@@ -157,10 +158,11 @@ void flywheelPID(int time)
     }
 
     // flywheel if not active
+
     else 
     {
-        flywheelL.brake();
-        flywheelR.brake();
+        flywheelL.move(65);
+        flywheelR.move(65);// hi brandon
     }
     // print rpm
     if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
