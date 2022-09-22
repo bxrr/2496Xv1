@@ -161,8 +161,8 @@ void flywheelPID(int time)
 
     else 
     {
-        flywheelL.move(65);
-        flywheelR.move(65);// hi brandon
+        flywheelL.brake();
+        flywheelR.brake();// hi brandon :)
     }
     // print rpm
     if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
@@ -176,17 +176,20 @@ void index(int time)
     static int init_time;
     static int discs = 0;
     bool discPresent = (distance.get() < 40) ? true : false;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2))
+
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
     {
         init_time = time;
         discs = 3;
         indexer.set(true);
     }
-    if(con.get_digital(E_CONTROLLER_DIGITAL_R1))
+
+    if(con.get_digital(E_CONTROLLER_DIGITAL_R1) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
     {
         discs = 0;
         indexer.set(true);//gerald was here
     }
+
     else
     {
 
@@ -207,6 +210,8 @@ void index(int time)
         else 
             indexer.set(false);
     }
+
+
 }
 
 void intake_toggle()
