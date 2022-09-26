@@ -95,9 +95,9 @@ void endgame_deploy(int time)
 }
 
 int speedArray[3] = {
-    470,
-    510,
-    580
+    400,
+    570,
+    550
 };
 
 void flywheelPID(int time)
@@ -151,7 +151,7 @@ void flywheelPID(int time)
         if (current_rpm < (target_rpm+20))
             speed = 127;
         else
-            speed = target_rpm * 0.212;
+            speed = target_rpm * 0.2;
 
         flywheelL.move(speed);
         flywheelR.move(speed);
@@ -201,7 +201,7 @@ void index(int time)
                 discs = discPresent ? discs - 1 : 0;
                 init_time = time;
             }
-            if (!indexer.get_status() && time - init_time > 400)
+            if (!indexer.get_status() && time - init_time > 150)
             {
                 indexer.toggle();
                 init_time = time;

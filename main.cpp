@@ -36,7 +36,7 @@ void opcontrol()
 
 	while(true)
 	{
-		arcade_drive();
+		arcade_drive_cool();
 		flywheelPID(time);
 		//intake_hold();
 		auto_roller(time);
