@@ -58,7 +58,7 @@ void solo_awp()
     roller_no_sensor(240);
     drive(-150, 800, 3.0);
 }
-void half_awp()
+void half_awp_dl()
 {
     //Get home roller
     roller_no_sensor(150);
@@ -90,51 +90,57 @@ void half_awp()
     flywheel_stop();
 
 }
-void right()
+
+void half_awp_nondl()
 {
-    intake_start();
-    drive(1500, 2000, 1.0, 80);
-    intake_stop();
-    flywheel_start(550);
-    turn_to(30, 1500);
-    flywheel_index(550, 1300, 5000);
-    delay(300);
-
-    drive(-700);
-    turn_to(90, 1500);
-    intake_start();
-    drive(1200, 1500, 1.0, 60);
-    intake_stop();
-    flywheel_start(540);
-    turn_to(15, 1600);
-    flywheel_index(540, 1300, 5000);
-    delay(300);
-
-    turn_to(-15, 1300, 1.1);
-    drive(-1000, 1800);
-    turn_to(0, 1000, 1.2);
-    drive(-800, 1400);
-    auton_auto_roller(3000);
-}
-
-void left()
-{
-    flywheel_start(600);
-    auton_auto_roller(2000);
-    drive(-400);
-    turn_to(-9);
-    delay(300);
-    flywheel_index(600, 400, 8000);
 
 }
+// void right()
+// {
+//     intake_start();
+//     drive(1500, 2000, 1.0, 80);
+//     intake_stop();
+//     flywheel_start(550);
+//     turn_to(30, 1500);
+//     flywheel_index(550, 1300, 5000);
+//     delay(300);
+
+//     drive(-700);
+//     turn_to(90, 1500);
+//     intake_start();
+//     drive(1200, 1500, 1.0, 60);
+//     intake_stop();
+//     flywheel_start(540);
+//     turn_to(15, 1600);
+//     flywheel_index(540, 1300, 5000);
+//     delay(300);
+
+//     turn_to(-15, 1300, 1.1);
+//     drive(-1000, 1800);
+//     turn_to(0, 1000, 1.2);
+//     drive(-800, 1400);
+//     auton_auto_roller(3000);
+// }
+
+// void left()
+// {
+//     flywheel_start(600);
+//     auton_auto_roller(2000);
+//     drive(-400);
+//     turn_to(-9);
+//     delay(300);
+//     flywheel_index(600, 400, 8000);
+
+// }
+void blank(){}
 
 std::vector<Auton> autons
 {
     Auton("test", test),
-    Auton("solo awp", solo_awp),
-    Auton("half awp", half_awp),
-    Auton("right", right),
-    Auton("left", left),
+    Auton("DL solo", solo_awp), //solo awp for disc loader
+    Auton("DL 1/2awp", half_awp_dl), //auton for side with disc loader (the side where u can start in front of the roller) 
+    Auton("nonDL 1/2awp", half_awp_nondl), //auton for side WITHOUT discloader
+    Auton("NO AUTON", blank)
 };
 
 void spin_off(int left, int right, int time)
