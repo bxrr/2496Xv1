@@ -35,8 +35,9 @@ void test()
 
 void solo_awp()
 {
-    // auton_auto_roller(2000);
+    //Get roller
     roller_no_sensor(180);
+
     drive(-325, 800, 3.0);
     turn_to(-136, 1000);
     intake_start();
@@ -44,15 +45,16 @@ void solo_awp()
     drive(1675, 2100, 1.0, 60);
     turn_to(-39, 1150);
     intake_stop();
-    flywheel_start_over(569);
+    flywheel_start_over(466);
+
     drive(-320, 800, 2.0);
-    delay(500);
-    flywheel_index_over(550, 600, 4000, 3);
+    delay(1000);
+    flywheel_index_over(439, 600, 4000, 3);
     flywheel_stop();
     delay(200);
-    turn_to(-145, 1000);
+    turn_to(-143, 1000);
     intake_start();
-    drive(3975, 2500, 1.0, 110);
+    drive(4000, 2500, 1.0, 110);
     intake_stop();
     spin_off(120, 10, 800);
     roller_no_sensor(240);
@@ -61,16 +63,17 @@ void solo_awp()
 void half_awp_dl()
 {
     //Get home roller
-    roller_no_sensor(150);
+    roller_no_sensor(180);
 
     //Launch preloaded discs
-    flywheel_start_over(585);
+    flywheel_start_over(498);
     drive(-325, 1000, 3.0);
-    turn_to(-8.7, 900, 1.3);
+    turn_to(-5, 900, 1.3);
     drive(-270, 1000, 3.0);
-    flywheel_index_over(592, 1500, 4000, 2);
+    flywheel_index_over(489, 1500, 4000, 2);
     delay(200);
     flywheel_stop();
+    delay(1000);
 
     //Move to get more discs
     turn_to(-123, 1100);
@@ -80,12 +83,12 @@ void half_awp_dl()
     delay(500);
 
     //Shoot new discs
-    flywheel_start_over(550);
+    flywheel_start_over(462);
     intake_reverse();
-    turn_to(-41, 1300);
+    turn_to(-47, 1300);
     intake_stop();
     drive(-600, 1000, 2.0);
-    flywheel_index_over(542, 650, 3000, 3);
+    flywheel_index_over(455, 800, 3000, 3);
     delay(200);
     flywheel_stop();
 

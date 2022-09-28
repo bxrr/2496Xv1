@@ -95,7 +95,7 @@ void endgame_deploy(int time)
 }
 
 int speedArray[3] = {
-    400,
+    390,
     570,
     550
 };
@@ -201,7 +201,7 @@ void index(int time)
                 discs = discPresent ? discs - 1 : 0;
                 init_time = time;
             }
-            if (!indexer.get_status() && time - init_time > 150)
+            if (!indexer.get_status() && time - init_time > 175)
             {
                 indexer.toggle();
                 init_time = time;
