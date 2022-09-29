@@ -94,10 +94,11 @@ void endgame_deploy(int time)
 
 }
 
-int speedArray[3] = {
-    390,
-    570,
-    550
+int speedArray[4] = {
+    400,
+    460,
+    550,
+    700
 };
 
 void flywheelPID(int time)
