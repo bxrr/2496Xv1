@@ -94,7 +94,8 @@ void endgame_deploy(int time)
 
 }
 
-int speedArray[4] = {
+int speedArray[5] = {
+    390,
     400,
     460,
     550,
