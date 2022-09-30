@@ -57,7 +57,7 @@ void arcade_drive_cool()
 void flywheel_toggle(int time)
 {
     static bool fly_toggle = false;
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
         fly_toggle = fly_toggle ? false : true;
     if(fly_toggle)
     {
@@ -113,7 +113,7 @@ void flywheelPID(int time)
     //update vars
     current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_Y))
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
         fly_toggle = fly_toggle ? false : true;
 
 
@@ -167,7 +167,7 @@ void flywheelPID(int time)
         flywheelR.brake();// hi brandon :)
     }
     // print rpm
-    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
+    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
         con.print(0, 0, "%.2f : %.2f           ", current_rpm, target_rpm);
 }
 
@@ -179,14 +179,14 @@ void index(int time)
     static int discs = 0;
     bool discPresent = (distance.get() < 40) ? true : false;
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
     {
         init_time = time;
         discs = 3;
         indexer.set(true);
     }
 
-    if(con.get_digital(E_CONTROLLER_DIGITAL_R1) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100)
+    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
     {
         discs = 0;
         indexer.set(true);//gerald was here
