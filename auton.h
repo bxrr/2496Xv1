@@ -42,19 +42,21 @@ void solo_awp()
     turn_to(-136, 1000);
     intake_start();
     chas.spin_dist(600, 90);
-    drive(1675, 2100, 1.0, 60);
-    turn_to(-39, 1150);
+    drive(1900, 2100, 1.0, 60);
+    turn_to(-27, 1150);
     intake_stop();
     flywheel_start_over(466);
 
-    drive(-320, 800, 2.0);
+    drive(-290, 800, 2.0);
+    
     delay(1000);
     flywheel_index_over(439, 600, 4000, 3);
     flywheel_stop();
     delay(200);
-    turn_to(-143, 1000);
+    turn_to(-130, 1000);
+
     intake_start();
-    drive(4000, 2500, 1.0, 110);
+    drive(4150, 2500, 1.0, 110);
     intake_stop();
     spin_off(120, 10, 800);
     roller_no_sensor(240);
@@ -97,6 +99,16 @@ void half_awp_dl()
 void half_awp_nondl()
 {
 
+}
+
+void roller_ez() {
+    auton_auto_roller(7000);
+}
+
+void roller_hard() {
+    drive(850, 1500, 2.0);
+    spin_off(127, -15, 900);
+    auton_auto_roller(7000);
 }
 // void right()
 // {
@@ -143,6 +155,8 @@ std::vector<Auton> autons
     Auton("DL solo", solo_awp), //solo awp for disc loader
     Auton("DL 1/2awp", half_awp_dl), //auton for side with disc loader (the side where u can start in front of the roller) 
     Auton("nonDL 1/2awp", half_awp_nondl), //auton for side WITHOUT discloader
+    Auton("Roller", roller_ez),
+    Auton("Virtuoller", roller_hard),
     Auton("NO AUTON", blank)
 };
 
