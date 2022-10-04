@@ -13,6 +13,7 @@ using namespace pros;
 // vars for flywheel PID
 //var for auto roller
 bool isRed = true;
+bool fly_toggle = false;
 
 void arcade_drive()
 {
@@ -108,7 +109,6 @@ void flywheelPID(int time)
     static double speed = 0;
     static int flyindex = 0;
     static double target_rpm = speedArray[0];
-    static bool fly_toggle = false;
 
     //update vars
     current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
@@ -179,14 +179,14 @@ void index(int time)
     static int discs = 0;
     bool discPresent = (distance.get() < 40) ? true : false;
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250 && fly_toggle)
     {
         init_time = time;
         discs = 3;
         indexer.set(true);
     }
 
-    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
+    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250 && fly_toggle)
     {
         discs = 0;
         indexer.set(true);//gerald was here
