@@ -33,7 +33,7 @@ namespace glb
     pros::Optical optical(P_OPTICAL);
     pros::Distance distance(P_DISTANCE);
     
-    Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_18, false);
+    Chassis chas({P_BL, P_FL}, {P_BR, P_FR}, pros::E_MOTOR_GEARSET_06, false);
     Piston indexer(P_INDEXER, false);
     Piston endgameL(P_ENDGAME_L, false);
     Piston endgameR(P_ENDGAME_R, false);
