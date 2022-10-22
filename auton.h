@@ -45,15 +45,15 @@ void solo_awp()
     drive(1900, 2100, 1.0, 60);
     turn_to(-27, 1150);
     intake_stop();
-    flywheel_start_over(480);
+    flywheel_start_over(460);
 
     drive(-290, 800, 2.0);
     
     delay(1000);
-    flywheel_index_over(455, 600, 4000, 3);
+    flywheel_index_over(435, 600, 4000, 3);
     flywheel_stop();
     delay(200);
-    turn_to(-130, 1000);
+    turn_to(-131.5, 1000);
 
     intake_start();
     drive(4150, 2500, 1.0, 110);

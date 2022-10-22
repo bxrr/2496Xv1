@@ -15,6 +15,10 @@ using namespace pros;
 bool isRed = true;
 bool fly_toggle = false;
 
+// int timer(int time) {
+//     int init_time = time;
+// }
+
 void arcade_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
@@ -95,20 +99,20 @@ void endgame_deploy(int time)
 
 }
 
-int speedArray[5] = {
-    390,
-    400,
-    460,
-    550,
-    700
-};
+// int speedArray[5] = {
+//     390,
+//     400,
+//     460,
+//     550,
+//     700
+// };
 
 void flywheelPID(int time)
 {
     static double current_rpm;
     static double speed = 0;
     static int flyindex = 0;
-    static double target_rpm = speedArray[0];
+    static double target_rpm = 390;
 
     //update vars
     current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
@@ -134,18 +138,21 @@ void flywheelPID(int time)
     // }
 
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-        if(flyindex<(sizeof(speedArray)/4 - 1)) {
-            flyindex++;
-        }
+        // if(flyindex<(sizeof(speedArray)/4 - 1)) {
+        //     flyindex++;
+        // }
+        target_rpm+=10;
+ 
     }
 
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-        if(flyindex>0) {
-            flyindex--;
-        }
+        // if(flyindex>0) {
+        //     flyindex--;
+        // }
+        target_rpm-=10;
     }
 
-    target_rpm = speedArray[flyindex];
+    // target_rpm = speedArray[flyindex];
 
     //adjusting voltage to match target
     if (fly_toggle)
@@ -173,20 +180,28 @@ void flywheelPID(int time)
 
 
 
+
 void index(int time)
 {
     static int init_time;
     static int discs = 0;
-    bool discPresent = (distance.get() < 40) ? true : false;
+    int rpmthresh = 250;
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250 && fly_toggle)
+    double rpmavg = (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2;
+
+    bool discPresent = (distance.get() < 40) ? true : false;
+    bool acceptrpm = rpmavg > rpmthresh;
+
+
+
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && acceptrpm)
     {
         init_time = time;
         discs = 3;
         indexer.set(true);
     }
 
-    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250 && fly_toggle)
+    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && acceptrpm)
     {
         discs = 0;
         indexer.set(true);//gerald was here
@@ -354,7 +369,7 @@ void tank_drive()
         chas.stop();
     }
 }
-//this is brandon
+//this is brandon]
 //i lovve manga
 //i type at 170 wpm
 
