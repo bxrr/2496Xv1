@@ -68,11 +68,11 @@ void half_awp_dl()
     roller_no_sensor(180);
 
     //Launch preloaded discs
-    flywheel_start_over(500);
+    flywheel_start_over(505);
     drive(-325, 1000, 3.0);
     turn_to(-6, 900, 1.3);
     drive(-270, 1000, 3.0);
-    flywheel_index_over(488, 1500, 4000, 2);
+    flywheel_index_over(493, 1500, 4000, 2);
     delay(200);
     flywheel_stop();
     delay(1000);
@@ -81,16 +81,16 @@ void half_awp_dl()
     turn_to(-130, 1100);
     intake_start();
     chas.spin_dist(800);
-    drive(2000, 2000, 1.0, 49);
+    drive(2100, 2000, 1.0, 40);
     delay(200);
 
     //Shoot new discs
-    flywheel_start_over(460);
+    flywheel_start_over(450);
     intake_reverse();
-    turn_to(-42, 1300);
+    turn_to(-41, 1300);
     intake_stop();
     drive(-400, 1000, 2.0);
-    flywheel_index_over(455, 800, 3000, 3);
+    flywheel_index_over(445, 800, 3000, 3);
     delay(200);
     flywheel_stop();
 
