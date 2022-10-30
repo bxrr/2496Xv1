@@ -41,56 +41,67 @@ void solo_awp()
     drive(-325, 800, 3.0);
     turn_to(-136, 1000);
     intake_start();
-    chas.spin_dist(600, 90);
-    drive(1900, 2100, 1.0, 60);
-    turn_to(-27, 1150);
+    // chas.spin_dist(600, 90);
+    // drive(1900, 2100, 1.0, 55);
+    chas.spin_dist(900);
+    drive(1600, 2000, 1.4, 40);
+    turn_to(-23.2, 1000);
     intake_stop();
-    flywheel_start_over(460);
-
-    drive(-290, 800, 2.0);
+    flywheel_start_over(471);
     
-    delay(1000);
-    flywheel_index_over(435, 600, 4000, 3);
+    drive(-250, 800, 2.0);
+    intake_reverse();
+    delay(800);
+    intake_stop();
+    flywheel_index_over(446, 600, 4000, 3);
+    
     flywheel_stop();
-    delay(200);
-    turn_to(-131.5, 1000);
+    delay(50);
+    turn_to(-126, 1000);
 
     intake_start();
-    drive(4150, 2500, 1.0, 110);
+    drive(4400, 2500, 1.5, 110);
     intake_stop();
     spin_off(120, 10, 800);
     roller_no_sensor(240);
     drive(-150, 800, 3.0);
-}
+
+
+
+
+
+
+
+ }
 void half_awp_dl()
 {
     //Get home roller
     roller_no_sensor(180);
 
     //Launch preloaded discs
-    flywheel_start_over(505);
-    drive(-325, 1000, 3.0);
-    turn_to(-6, 900, 1.3);
-    drive(-270, 1000, 3.0);
-    flywheel_index_over(493, 1500, 4000, 2);
+    flywheel_start_over(575);
+    drive(-325, 750, 3.0);
+    turn_to(-6, 600, 1.3);
+    drive(-270, 750, 3.0);
+    flywheel_index_over(525, 1500, 4000, 2);
     delay(200);
     flywheel_stop();
-    delay(1000);
+    delay(200);
 
     //Move to get more discs
     turn_to(-130, 1100);
     intake_start();
-    chas.spin_dist(800);
-    drive(2100, 2000, 1.0, 40);
+    chas.spin_dist(700);
+    drive(2300, 2000, 0.8, 40);
     delay(200);
 
     //Shoot new discs
-    flywheel_start_over(450);
+    flywheel_start_over(487);
     intake_reverse();
-    turn_to(-41, 1300);
+    turn_to(-39.6, 1300);
     intake_stop();
-    drive(-400, 1000, 2.0);
-    flywheel_index_over(445, 800, 3000, 3);
+    drive(-230, 1000, 2.0);
+    flywheel_index_over(478, 800, 3000, 3);
     delay(200);
     flywheel_stop();
 
