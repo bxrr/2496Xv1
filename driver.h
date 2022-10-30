@@ -18,7 +18,10 @@ bool fly_toggle = false;
 // int timer(int time) {
 //     int init_time = time;
 // }
-
+bool flywheelOk()
+{
+    return fly_toggle && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 100;
+}
 void arcade_drive()
 {
     double left = abs(con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) > 10 ? con.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) : 0;
@@ -99,32 +102,32 @@ void endgame_deploy(int time)
 
 }
 
-// int speedArray[5] = {
-//     390,
-//     400,
-//     460,
-//     550,
-//     700
-// };
+int speedArray[5] = {
+    390,
+    400,
+    460,
+    550,
+    700
+};
 
 void flywheelPID(int time)
 {
     static double current_rpm;
     static double speed = 0;
     static int flyindex = 0;
-    static double target_rpm = 390;
+    static double target_rpm;
 
     //update vars
     current_rpm = (flywheelR.get_actual_velocity() + flywheelL.get_actual_velocity())/2;
 
     if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R1))
-        fly_toggle = fly_toggle ? false : true;
+        fly_toggle = !flywheel_toggle;
 
 
     //Iterator- Deprecated in favor of array selector
     // if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X))
     // {
-    //     // target_rpm = 480;
+    //     // target_rpm = 390;
     //     target_rpm += 10;
     //     if (target_rpm > 600)
     //         target_rpm = 600;
@@ -138,21 +141,21 @@ void flywheelPID(int time)
     // }
 
     if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-        // if(flyindex<(sizeof(speedArray)/4 - 1)) {
-        //     flyindex++;
-        // }
-        target_rpm+=10;
+        if(flyindex<(sizeof(speedArray)/4 - 1)) {
+            flyindex++;
+        }
+      
  
     }
 
     else if (con.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
-        // if(flyindex>0) {
-        //     flyindex--;
-        // }
-        target_rpm-=10;
+        if(flyindex>0) {
+            flyindex--;
+        }
+       
     }
 
-    // target_rpm = speedArray[flyindex];
+    target_rpm = speedArray[flyindex];
 
     //adjusting voltage to match target
     if (fly_toggle)
@@ -174,7 +177,7 @@ void flywheelPID(int time)
         flywheelR.brake();// hi brandon :)
     }
     // print rpm
-    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2 > 250)
+    if (time % 50 == 0 && time % 100 != 0 && time % 150 != 0 && fly_toggle)
         con.print(0, 0, "%.2f : %.2f           ", current_rpm, target_rpm);
 }
 
@@ -185,23 +188,23 @@ void index(int time)
 {
     static int init_time;
     static int discs = 0;
-    int rpmthresh = 250;
+    //int rpmthresh = 250;
 
-    double rpmavg = (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2;
+    //double rpmavg = (flywheelL.get_actual_velocity() + flywheelR.get_actual_velocity())/2;
 
     bool discPresent = (distance.get() < 40) ? true : false;
-    bool acceptrpm = rpmavg > rpmthresh;
+    //bool acceptrpm = rpmavg > rpmthresh;
 
 
 
-    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && acceptrpm)
+    if(con.get_digital_new_press(E_CONTROLLER_DIGITAL_R2) && flywheelOk())
     {
         init_time = time;
         discs = 3;
         indexer.set(true);
     }
 
-    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && acceptrpm)
+    if(con.get_digital(E_CONTROLLER_DIGITAL_Y) && flywheelOk())
     {
         discs = 0;
         indexer.set(true);//gerald was here
